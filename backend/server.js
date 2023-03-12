@@ -1,12 +1,14 @@
 const path =require('path');
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require("cors");
 dotenv.config({ path: "./config/config.env" });
 const dbConnect = require("./config/db");
 const app = express();
 const globalErrHandler = require("./middlewares/globalErrHandler");
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
+app.use(cors());
 //middleware
 
 app.use(express.json()); //pass incoming payload
