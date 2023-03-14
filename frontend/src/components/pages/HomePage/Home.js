@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import BlogList from "../BlogList";
+import './Home.css'
+import BlogListHome from "./BlogListHome";
+import LeftSide from "./LeftSide";
 
 function Home() {
     //since there was no click in the beginning thus there was no redborder on homelink
@@ -19,8 +21,13 @@ function Home() {
 
     useEffect(() => {
         stylingNavbar()
-
-    })
+        fetch('http://localhost:8000/api/v1/posts')
+        .then(res => res.json())
+        .then((data) => {
+            console.log(data);
+            setBlogArray(data.data);
+        })
+    },[])
 
        
 
@@ -28,8 +35,8 @@ function Home() {
 
     return (
         <div id="home" >
-
-            <BlogList blogs={blogArray}/>
+            <LeftSide/>
+            <BlogListHome blogs={blogArray} />
 
         </div>
     );

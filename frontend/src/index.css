@@ -14,7 +14,7 @@ body {
 	/* Firefox will set width as auto */
 	width: 800px;
 	/* As IE6 ignores !important it will set width as 1000px; */
-	/* background-color: #000000; */
+	background-color: #f8fafc;
 }
 
 .hr {
@@ -22,11 +22,14 @@ body {
 	width: 100%;
 	height: 0.5px;
 	background-color: rgb(218, 218, 218);
+	margin-bottom: 20px;
 }
 
 header {
 	display: flex;
 	align-items: center;
+	background-color: white;
+	/* margin-bottom: 25px; */
 }
 
 .ex {
@@ -63,6 +66,7 @@ header {
 }
 
 #input {
+	background-color: #f8fafc;
 	height: 35px;
 	flex-grow: 1;
 	border-radius: 5px;
