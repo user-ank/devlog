@@ -22,7 +22,7 @@ const commentRouter = require("./routes/comments/commentRoutes");
 //routing of users,posts,category,comments
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/posts", postRouter);
-app.use("/api/v1/category", categoryRouter);
+// app.use("/api/v1/category", categoryRouter);
 app.use("/api/v1/comments", commentRouter);
 
 //errorhandlers middleware
