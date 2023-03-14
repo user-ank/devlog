@@ -1,11 +1,7 @@
-function NotificationsLink(props) {
-
-    function doTask(e) {
-        props.click(e);
-    }
+function NotificationsLink() {
 
     return (
-        <div className='navImgDiv' onClick={doTask}>
+        <div className='navImgDiv' >
             <img id='notificationsLink' alt="timer" src={require('../../img/bell2.png')} className='navImg' />
         </div>
     );

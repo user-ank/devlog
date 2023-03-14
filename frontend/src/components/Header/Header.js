@@ -14,7 +14,7 @@ function Header() {
     return (
         <div>
             <header>
-                <div className="name">Colleg<span className="ex">Ex</span></div>
+                <div className="name">DEV<span className="ex">log</span></div>
 
                 <Searchbar />
 

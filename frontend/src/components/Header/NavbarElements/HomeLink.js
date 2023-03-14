@@ -1,11 +1,8 @@
-function HomeLink(props){
+function HomeLink(){
 
-    function doTask(e){
-        props.click(e);
-    }
 
     return(
-        <div className='navImgDiv' onClick={doTask}>
+        <div className='navImgDiv'>
             <img id='homeLink' alt="timer" src={require('../../img/home.png')} className='navImg ' />
         </div>
     );

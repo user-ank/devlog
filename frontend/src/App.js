@@ -1,5 +1,5 @@
 import Header from './components/Header/Header';
-import Home from './components/pages/Home';
+import Home from './components/pages/HomePage/Home';
 import Events from './components/pages/Events';
 import Groups from './components/pages/Groups';
 import Notifications from './components/pages/Notifications';
@@ -11,6 +11,7 @@ import { AuthProvider } from './context/auth';
 import RequireAuth from './context/RequireAuth';
 import Profile from './components/pages/Profile';
 import BlogPage from './components/pages/BlogPage';
+import User from './components/pages/UserPage/User';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path='/devlog/groups' element={<RequireAuth><Groups/></RequireAuth>}/>
           <Route path='/devlog/notifications' element={<RequireAuth><Notifications/></RequireAuth>}/>
           <Route path='/devlog/profile' element={<RequireAuth><Profile/></RequireAuth>}/>
+          <Route path='/devlog/:username/' element={<User/>} />
           <Route path='/devlog/:username/:blogTitle' element={<BlogPage/>}/>
           <Route path='*' element={<NotFound/>}/>
         </Routes>
