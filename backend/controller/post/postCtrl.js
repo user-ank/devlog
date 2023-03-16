@@ -43,7 +43,7 @@ const createPostCtrl = async (req, res, next) => {
 //for all post
 const fetchPostCtrl = async (req, res,next) => {
   try {
-    const posts = await Post.find({})
+    const posts = await Post.find().sort({createdAt:-1})
       .populate("user")
       // .populate("category", "title");
 
@@ -55,6 +55,7 @@ const fetchPostCtrl = async (req, res,next) => {
     //   return isBlocked ? null : post;
     // });
 
+    
     res.json({
       status: "success",
       data: posts,
@@ -63,6 +64,34 @@ const fetchPostCtrl = async (req, res,next) => {
     next(appErr(error.message));
   }
 };
+
+const userPostsCtrl = async (req, res, next) => {
+  const UserName = req.params;
+
+  try {
+    const USer = await User.find({ userName: UserName.id });
+
+    if (USer.length > 0) {
+      const user_id = USer[0]._id;
+
+      const UsersPost = await Post.find({ user: user_id }).sort({createdAt:-1});
+
+      res.status(200).json({
+        status: "success",
+
+        data: UsersPost,
+      });
+    } else {
+      res.json({
+        message: "Username doesnt exist",
+      });
+    }
+  } catch (error) {
+    next(appErr(error.message));
+  }
+};
+
+
 
 //toogle likes
 const toggleLikesPostCtrl = async (req, res,next) => {
@@ -205,4 +234,5 @@ module.exports = {
   toggleLikesPostCtrl,
   toggleDisLikesPostCtrl,
   postDetailsCtrl,
+  userPostsCtrl,
 };
