@@ -16,7 +16,7 @@ function BlogHome(prop) {
 				<div className='blogHeader'>
 					<img className='blogHeaderImage' />
 					
-					<Link to={"/devlog/" + blog.username}>
+					<Link to={"/devlog/" + blog.user.userName}>
 						<div className='blogHeaderNameTimeDiv'>
 
 							<div className='blogHeaderName'>{blog.user.name}</div>
@@ -31,15 +31,15 @@ function BlogHome(prop) {
 				</div>
 
 
-				<Link to={"/devlog/" + blog.username + "/" + blog.title}>
+				<Link to={"/devlog/" + blog.user.userName + "/" + blog.title}>
 					<div className='blogBody'>
 						<div className='blogBodyContentDiv'>
 							<div className='blogBodyTitle'>{blog.title}</div>
 							<div className='blogBodyMinRead'>{5} min read</div>
 							<div className='blogBodyContent'>{blog.content.substring(0,300)+"..."}</div>
 						</div>
-						<div className='blogBodyImage'> {/*  put image here */}
-							{blog.hasImage ? <img /> : null}
+						<div className='blogBodyImageDiv'> {/*  put image here */}
+							{blog.ContainImage ? <img className='blogBodyImage' src={blog.photo}/> : null}
 						</div>
 
 						

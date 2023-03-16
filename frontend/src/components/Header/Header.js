@@ -3,6 +3,7 @@ import Searchbar from './Searchbar';
 import {useAuth} from '../../context/auth'
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import Loader from './Loader';
 
 // Will contain header components like search-bar nav-bar login-icon 
 
@@ -41,6 +42,7 @@ function Header() {
             </header>
 
             <div className='hr'></div>
+            <Loader/>
         </div>
 
     );

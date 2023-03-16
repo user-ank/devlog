@@ -6,7 +6,7 @@ import Notifications from './components/pages/Notifications';
 import Login from './components/pages/login'
 import NotFound from './components/pages/NotFound';
 
-import {Routes, Route} from "react-router-dom";
+import {Routes, Route, Navigate} from "react-router-dom";
 import { AuthProvider } from './context/auth';
 import RequireAuth from './context/RequireAuth';
 import Profile from './components/pages/Profile';
@@ -20,6 +20,7 @@ function App() {
 
         <Header/>
         <Routes>
+          <Route path="/" element={<Navigate to="/devlog" />}/>
           <Route path='/devlog' exact  element={<Home/>}/>
           <Route path='/devlog/login' exact  element={<Login/>}/>
           <Route path='/devlog/events' element={<RequireAuth><Events/></RequireAuth>}/>

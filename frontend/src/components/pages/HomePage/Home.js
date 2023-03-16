@@ -21,14 +21,28 @@ function Home() {
 
     useEffect(() => {
         stylingNavbar()
+
+        let loader =  document.getElementById('loader');
+        loader.style.visibility = "visible";
+        loader.classList.add("eighty");
+
         fetch('http://localhost:8000/api/v1/posts')
-        .then(res => res.json())
+        .then(res => {
+            
+            return (res.json())
+        })
         .then((data) => {
             console.log(data);
             setBlogArray(data.data);
+            loader.classList.add("hundred");
+            
+            setTimeout(()=>{
+                loader.style.visibility = "hidden";
+                loader.classList.remove("eighty", "hundred");
+            },1000)
+            
         })
     },[])
-
        
 
         

@@ -40,6 +40,15 @@ a{
 }
 .blogBody{
     margin-top: 5px;
+    display: flex;
+}
+.blogBodyImage{
+    margin-top: 20px;
+    height: 150px;
+    margin-left: 15px;
+    border-radius: 8px;
+    width: 260px;
+    border: 0.5px solid rgb(218, 218, 218);
 }
 .blogBodyTitle{
     font-weight: 600;
