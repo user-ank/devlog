@@ -1,5 +1,5 @@
 import React from 'react'
-import "./css/Profile_home.css";
+import "./Profile_home.css";
 
 import SearchIcon from '@mui/icons-material/Search';
 import DarkModeIcon from '@mui/icons-material/DarkMode';

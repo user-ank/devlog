@@ -1,5 +1,5 @@
 import React from 'react'
-import "./css/Profile_home_post.css";
+import "./Profile_home_post.css";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 function Profile_home_post() {
