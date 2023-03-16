@@ -33,7 +33,7 @@ function Home() {
         })
         .then((data) => {
             console.log(data);
-            setBlogArray(data.data);
+            setBlogArray(data.data.doc);
             loader.classList.add("hundred");
             
             setTimeout(()=>{
