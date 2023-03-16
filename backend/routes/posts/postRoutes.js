@@ -13,6 +13,7 @@ const {
   toggleLikesPostCtrl,
   toggleDisLikesPostCtrl,
   postDetailsCtrl,
+  userPostsCtrl,
 } = require("../../controller/post/postCtrl");
 
 const isLogin = require("../../middlewares/isLogin");
@@ -22,10 +23,11 @@ const upload = multer({ storage });
 
 postRouter.get("/",fetchPostCtrl);
 
+postRouter.get("/:id",userPostsCtrl);
+
 postRouter.use(isLogin);
 
 postRouter.post("/",upload.single("image"), createPostCtrl);
-
 
 postRouter.get("/likes/:id",toggleLikesPostCtrl);
 

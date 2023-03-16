@@ -53,6 +53,7 @@ const fetchPostCtrl = async (req, res, next) => {
 
     const doc = await posts.query;
 
+  
     res.json({
       status: "success",
       data: {
@@ -64,6 +65,34 @@ const fetchPostCtrl = async (req, res, next) => {
   }
 
 };
+
+const userPostsCtrl = async (req, res, next) => {
+  const UserName = req.params;
+
+  try {
+    const USer = await User.find({ userName: UserName.id });
+
+    if (USer.length > 0) {
+      const user_id = USer[0]._id;
+
+      const UsersPost = await Post.find({ user: user_id }).sort({createdAt:-1});
+
+      res.status(200).json({
+        status: "success",
+
+        data: UsersPost,
+      });
+    } else {
+      res.json({
+        message: "Username doesnt exist",
+      });
+    }
+  } catch (error) {
+    next(appErr(error.message));
+  }
+};
+
+
 
 //toogle likes
 
@@ -207,4 +236,5 @@ module.exports = {
   toggleLikesPostCtrl,
   toggleDisLikesPostCtrl,
   postDetailsCtrl,
+  userPostsCtrl,
 };
