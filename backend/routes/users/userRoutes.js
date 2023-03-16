@@ -27,56 +27,42 @@ const upload=multer({storage});
 
 
 userRouter.post("/register", userRegisterCtrl);
-
-//POST/api/v1/users/login
 userRouter.post("/login", userLoginCtrl);
 
-//GET/api/v1/users/:id
-userRouter.get("/profile/",isLogin,userProfileCtrl);
+userRouter.use(isLogin);
 
-
-//GET/api/v1/users/:id
-userRouter.get("/profileByName/:id",isLogin,userProfileByUserNameCtrl);
-
-//GET/api/v1/users/
 userRouter.get("/", usersCtrl);
 
-//GET/api/v1/users/profile-viewers/:id
-userRouter.get("/profile-viewers/:id",isLogin,whoViewedMyProfileCtrl);
-
+userRouter.get("/profile/",userProfileCtrl);
+userRouter.get("/profileByName/:id",userProfileByUserNameCtrl);
+userRouter.get("/profile-viewers/:id",whoViewedMyProfileCtrl);
 
 //GET/api/v1/users/following/:id
-userRouter.get("/following/:id",isLogin,followingCtrl);
-
-
-userRouter.get("/unfollowing/:id",isLogin,unFollowCtrl);
+userRouter.get("/following/:id",followingCtrl);
+userRouter.get("/unfollowing/:id",unFollowCtrl);
 
 //GET/api/v1/users/blocked/:id
-userRouter.get("/block/:id",isLogin,blockUsersCtrl);
+// userRouter.get("/block/:id",blockUsersCtrl);
 
 //GET/api/v1/users/unblock/:id
-userRouter.get("/unblock/:id",isLogin,unblockUserCtrl);
-
-
-//put/api/v1/users/admin-block/:id
-userRouter.put("/admin-block/:id",isLogin,isAdmin,adminBlockUsersCtrl);
-
-
-//put/api/v1/users/admin-block/:id
-userRouter.put("/admin-unblock/:id",isLogin,isAdmin,adminUnBlockUsersCtrl);
+// userRouter.get("/unblock/:id",unblockUserCtrl);
 
 //Delete/api/v1/users/delete-account
-userRouter.delete("/delete-account",isLogin, deleteUserAccountCtrl);
-//put/api/v1/users/
-userRouter.put("/",isLogin,updateUserCtrl);
+userRouter.delete("/delete-account", deleteUserAccountCtrl);
 
+//put/api/v1/users/
+userRouter.put("/",updateUserCtrl);
 
 //put/api/v1/users/update-password
-userRouter.put("/update-password",isLogin,updatePasswordCtrl);
+userRouter.put("/update-password",updatePasswordCtrl);
+
+userRouter.post("/profile-photo-upload",upload.single('profile'),profilePhotoUploadCtrl);
 
 
+//put/api/v1/users/admin-block/:id
+userRouter.put("/admin-unblock/:id",isAdmin,adminUnBlockUsersCtrl);
 
-
-userRouter.post("/profile-photo-upload",isLogin,upload.single('profile'),profilePhotoUploadCtrl);
+//put/api/v1/users/admin-block/:id
+userRouter.put("/admin-block/:id",isAdmin,adminBlockUsersCtrl);
 
 module.exports = userRouter;
