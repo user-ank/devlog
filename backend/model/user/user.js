@@ -119,6 +119,7 @@ userSchema.virtual("followers-count").get(function () {
 });
 
 //get following count
+
 userSchema.virtual("following-count").get(function () {
   return this.following.length;
 });

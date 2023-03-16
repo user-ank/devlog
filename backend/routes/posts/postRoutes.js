@@ -20,20 +20,23 @@ const isLogin = require("../../middlewares/isLogin");
 //file upload middleware
 const upload = multer({ storage });
 
-postRouter.post("/", isLogin, upload.single("image"), createPostCtrl);
-
 postRouter.get("/",fetchPostCtrl);
 
-postRouter.get("/likes/:id", isLogin, toggleLikesPostCtrl);
+postRouter.use(isLogin);
 
-postRouter.get("/disLikes/:id", isLogin, toggleDisLikesPostCtrl);
+postRouter.post("/",upload.single("image"), createPostCtrl);
+
+
+postRouter.get("/likes/:id",toggleLikesPostCtrl);
+
+postRouter.get("/disLikes/:id",toggleDisLikesPostCtrl);
 
 //Delete/api/v1/posts/:id
-postRouter.delete("/:id", isLogin, deletePostCtrl);
+postRouter.delete("/:id",deletePostCtrl);
 //put/api/v1/posts/:id
 
-postRouter.put("/:id", isLogin, upload.single("image"), updatePostCtrl);
+postRouter.put("/:id", upload.single("image"), updatePostCtrl);
 
-postRouter.get("/:id", isLogin, postDetailsCtrl);
+postRouter.get("/:id", postDetailsCtrl);
 
 module.exports = postRouter;

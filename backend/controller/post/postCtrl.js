@@ -2,9 +2,10 @@ const Post = require("../../model/post/post");
 const User = require("../../model/user/user");
 const Category = require("../../model/category/category");
 const appErr = require("../../utils/appErr");
+const APIFeatures = require('./../../utils/API Features');
 
 const createPostCtrl = async (req, res, next) => {
-  const { title,subtitle,category,content,minute_read,ContainImage,} = req.body;
+  const { title, subtitle, category, content, minute_read, ContainImage, } = req.body;
 
   try {
     const author = await User.findById(req.userAuth);
@@ -41,31 +42,32 @@ const createPostCtrl = async (req, res, next) => {
 };
 
 //for all post
-const fetchPostCtrl = async (req, res,next) => {
+const fetchPostCtrl = async (req, res, next) => {
   try {
-    const posts = await Post.find({})
-      .populate("user")
-      // .populate("category", "title");
 
-    // jo user hume block kr chuka hai ..uska post hu nhi dekh payenge ....
-    // const filteredPost = posts.filter((post) => {
-    //   const blockedUsers = post.user.blocked;
-    //   const isBlocked = blockedUsers.includes(req.userAuth);
-    //   console.log(isBlocked);
-    //   return isBlocked ? null : post;
-    // });
+    const posts = new APIFeatures(Post.find({}).populate("user"), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginations();
+
+    const doc = await posts.query;
 
     res.json({
       status: "success",
-      data: posts,
+      data: {
+        doc
+      },
     });
   } catch (error) {
     next(appErr(error.message));
   }
+
 };
 
 //toogle likes
-const toggleLikesPostCtrl = async (req, res,next) => {
+
+const toggleLikesPostCtrl = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -94,7 +96,7 @@ const toggleLikesPostCtrl = async (req, res,next) => {
 
 //toggle dislikes
 
-const toggleDisLikesPostCtrl = async (req, res,next) => {
+const toggleDisLikesPostCtrl = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id);
 
@@ -167,7 +169,7 @@ const deletePostCtrl = async (req, res, next) => {
 };
 //put/api/v1/posts/:id
 const updatePostCtrl = async (req, res, next) => {
-  const { title, description, category,photo } = req.body;
+  const { title, description, category, photo } = req.body;
   try {
     const post = await Post.findById(req.params.id);
 
@@ -197,7 +199,7 @@ const updatePostCtrl = async (req, res, next) => {
 
 module.exports = {
   createPostCtrl,
-  
+
   deletePostCtrl,
   updatePostCtrl,
 
