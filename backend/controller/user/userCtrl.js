@@ -8,71 +8,6 @@ const generateToken = require("../../utils/generateToken");
 const getTokenFromHeader = require("../../utils/getTokenFromHeader");
 const { findById } = require("../../model/post/post");
 
-const userRegisterCtrl = async (req, res, next) => {
-  const { name, email, password, userName } = req.body;
-
-  try {
-    //checking if email is already exist
-    const userfound = await User.findOne({ email });
-    if (userfound) {
-      return next(appErr("user already exist", 500));
-    }
-
-    //hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const user = await User.create({
-      name,
-
-      email,
-      password: hashedPassword,
-      userName,
-    });
-
-    res.json({
-      status: "success",
-      data: user,
-    });
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
-
-const userLoginCtrl = async (req, res, next) => {
-  const { email, password } = req.body;
-  try {
-    //checking if email exist
-    const userFound = await User.findOne({ email });
-    if (!userFound) {
-      return next(appErr("invalid login credentials"));
-    }
-
-    //checking the password
-
-    const ispasswordmatched = await bcrypt.compare(
-      password,
-      userFound.password
-    );
-
-    if (!ispasswordmatched) {
-      return next(appErr("invalid login credentials"));
-    }
-
-    res.json({
-      status: "success",
-      data: {
-        firstName: userFound.firstName,
-        lastName: userFound.lastName,
-        email: userFound.email,
-        isAdmin: userFound.isAdmin,
-        token: generateToken(userFound._id),
-      },
-    });
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
 
 const userProfileCtrl = async (req, res, next) => {
   // console.log(req.userAuth);
@@ -443,8 +378,6 @@ const profilePhotoUploadCtrl = async (req, res, next) => {
 };
 
 module.exports = {
-  userRegisterCtrl,
-  userLoginCtrl,
   userProfileCtrl,
   usersCtrl,
   deleteUserAccountCtrl,

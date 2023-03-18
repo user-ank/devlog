@@ -1,21 +1,20 @@
 const mongoose = require("mongoose");
 const Post = require("../post/post");
+// const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: [true, 'Please tell us your name! ']
-  },
-
+    },
     userName: {
       type: String,
-      unique: true,
       required: [true, "userName is required"],
     },
-
-//will use this username paramtere as searching user
-
     profilePhoto: {
       type: String,
     },
@@ -26,27 +25,8 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Password is required"],
+      select: false
     },
-
-    // isBlocked: {
-    //   type: Boolean,
-    //   default: false,
-    // },
-    // isAdmin: {
-    //   type: Boolean,
-    //   default: false,
-    // },
-    // role: {
-    //   type: String,
-    //   default:'User',
-    //   enum: ["Admin", "Guest", "Editor"],
-    // },
-    // viewers: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User",
-    //   },
-    // ],
     followers: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -72,26 +52,19 @@ const userSchema = new mongoose.Schema(
         ref: "Comment",
       },
     ],
-    // blocked: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "User",
-    //   },
-    // ],
-
-    // plan: [
-    //   {
-    //     type: String,
-    //     enum: ["Free", "Premium", "Pro"],
-    //     default: "Free",
-    //   },
-    // ],
-
     userAward: {
       type: String,
       enum: ["Bronze", "Silver", "Gold"],
       default: "Bronze",
     },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+    active: {
+      type: Boolean,
+      default: true,
+      select: false
+    }
   },
   {
     timestamps: true,
@@ -99,40 +72,64 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-//hooks
-
-//pre -before record is saved
-
-
-
-
-
-
-//get post count
 userSchema.virtual("post-count").get(function () {
   return this.posts.length;
 });
 
-//get followers count
 userSchema.virtual("followers-count").get(function () {
   return this.followers.length;
 });
 
-//get following count
 
 userSchema.virtual("following-count").get(function () {
   return this.following.length;
 });
 
-//get viewers count
-// userSchema.virtual("viewers-count").get(function () {
-//   return this.viewers.length;
-// });
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 12);
+  this.confirmPassword = undefined;
+  next();
+});
 
-//get blocked count
-// userSchema.virtual("blocked-count").get(function () {
-//   return this.blocked.length;
-// });
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
+});
+
+
+userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+}
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  return false;
+};
+
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  console.log({ resetToken }, this.passwordResetToken);
+  return resetToken;
+}
+
+
 
 const User = mongoose.model("User", userSchema);
 
