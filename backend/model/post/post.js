@@ -10,15 +10,15 @@ const postSchema = new mongoose.Schema({
   },
   subtitle: {
     type: String,
-    required: [true, "Post Title is required"],
+    required: [true, "Subtitle Title is required"],
   },
   minute_read: {
     type: String,
-    required: [true, "Post Title is required"],
+    required: [true, "Reading Time Title is required"],
   },
   content: {
     type: String,
-    required: [true, "Post Title is required"],
+    required: [true, "Content is required"],
   },
   report_number: { type: String },
   is_Bookmared: [

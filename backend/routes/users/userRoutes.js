@@ -2,8 +2,6 @@ const express = require("express");
 const storage = require("../../config/cloudinary")
 const multer=require("multer");
 const {
-  userRegisterCtrl,
-  userLoginCtrl,
   userProfileCtrl,
   usersCtrl,
   deleteUserAccountCtrl,
@@ -12,26 +10,32 @@ const {
   whoViewedMyProfileCtrl,
   followingCtrl,
   unFollowCtrl,
-  blockUsersCtrl,
-  unblockUserCtrl,
   adminBlockUsersCtrl,
   adminUnBlockUsersCtrl,
   updatePasswordCtrl,
   userProfileByUserNameCtrl,
 } = require("../../controller/user/userCtrl");
-const isLogin=require("../../middlewares/isLogin");
+
+
 const isAdmin=require("../../middlewares/isAdmin");
+
+const {signup,login,protect,forgetPassword,resetPassword,updatePassword,checkPassAndUserID} = require("../../controller/authController");
+
 const userRouter = express.Router();
 
 const upload=multer({storage});
 
 
-userRouter.post("/register", userRegisterCtrl);
-userRouter.post("/login", userLoginCtrl);
+userRouter.post("/signup", signup);
+userRouter.post("/login", login);
+userRouter.post("/forget", forgetPassword);
+userRouter.patch("/reset/:token", resetPassword);
+userRouter.post("/checkPassAndUserID",checkPassAndUserID)
 
-userRouter.use(isLogin);
+userRouter.use(protect);
+userRouter.patch("/updatePassword", updatePassword);
 
-userRouter.get("/", usersCtrl);
+userRouter.get("/",usersCtrl);
 
 userRouter.get("/profile/",userProfileCtrl);
 userRouter.get("/profileByName/:id",userProfileByUserNameCtrl);
@@ -40,12 +44,6 @@ userRouter.get("/profile-viewers/:id",whoViewedMyProfileCtrl);
 //GET/api/v1/users/following/:id
 userRouter.get("/following/:id",followingCtrl);
 userRouter.get("/unfollowing/:id",unFollowCtrl);
-
-//GET/api/v1/users/blocked/:id
-// userRouter.get("/block/:id",blockUsersCtrl);
-
-//GET/api/v1/users/unblock/:id
-// userRouter.get("/unblock/:id",unblockUserCtrl);
 
 //Delete/api/v1/users/delete-account
 userRouter.delete("/delete-account", deleteUserAccountCtrl);
