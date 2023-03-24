@@ -53,7 +53,7 @@ exports.checkPassAndUserID = catchAsync(async (req, res, next) => {
     }
 
 
-    res.status(400).json({
+    res.status(200).json({
         resObj
     });
 
@@ -84,7 +84,7 @@ exports.signup = catchAsync(async (req, res, next) => {
         createSendToken(newUser, 201, res);
     }
     else {
-        res.status(400).json({
+        res.status(200).json({
             resObj
         });
     }
