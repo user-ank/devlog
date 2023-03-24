@@ -6,33 +6,77 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError')
 const sendEmail = require('./../utils/email');
 const { LOADIPHLPAPI } = require('dns');
+const UserToken = require('./../model/user/userToken');
+const verifyRefreshToken = ('./../utils/varifyRefreshToken');
 
 
-const signToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN
+const signToken = (id, secret, expireTime) => {
+    return jwt.sign({ id }, secret, {
+        expiresIn: expireTime
     });
 }
 
-const createSendToken = (user, statusCode, res) => {
-    const token = signToken(user._id)
+const createSendToken = async (user, statusCode, res) => {
+    const accessToken = signToken(user._id, process.env.JWT_ACCESS_SECRET, process.env.JWT_ACCESS_EXPIRES_IN);
+    const refreshToken = signToken(user._id, process.env.JWT_RFRESH_SECRET, process.env.JWT_REFRESH_EXPIRES_IN);
+
+    const userToken = await UserToken.findOne({ userId: user._id });
+    if (userToken) await userToken.remove();
+    await new UserToken({ userId: user._id, token: refreshToken }).save();
+
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
         httpOnly: true
     }
 
     if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-    res.cookie('jwt', token, cookieOptions);
+    res.cookie('jwt', refreshToken, cookieOptions);
     user.password = undefined;
 
     res.status(statusCode).json({
         status: 'success',
-        token,
+        accessToken,
+        refreshToken,
         data: {
             user
         }
     });
 }
+
+
+exports.renewAccessToken = catchAsync(async (req, res, next) => {
+    // console.log("Hi");
+    // const refreshToken = req.body.token;
+    // console.log(refreshToken);
+
+    const cookies = req.cookies
+    if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
+    const refreshToken = cookies.jwt
+
+    let decoded;
+    if (refreshToken) {
+        const valid = UserToken.find({ token: refreshToken });
+        if (valid) {
+            decoded = await promisify(jwt.verify)(refreshToken, process.env.JWT_RFRESH_SECRET);
+        } else {
+            res.status(404).json({
+                message: 'Your are not authenticated 🙃🙃🙃🙃'
+            });
+        }
+    } else {
+        res.status(404).json({
+            message: 'Please Send refresh token 🙃🙃🙃🙃'
+        });
+    }
+
+    const accessToken = signToken(decoded.id, process.env.JWT_ACCESS_SECRET, process.env.JWT_ACCESS_EXPIRES_IN);
+
+    return res.status(201).json({
+        accessToken: accessToken
+    });
+});
+
+
 
 exports.checkPassAndUserID = catchAsync(async (req, res, next) => {
     let { userName, email } = req.body;
@@ -53,7 +97,7 @@ exports.checkPassAndUserID = catchAsync(async (req, res, next) => {
     }
 
 
-    res.status(400).json({
+    res.status(200).json({
         resObj
     });
 
@@ -84,7 +128,7 @@ exports.signup = catchAsync(async (req, res, next) => {
         createSendToken(newUser, 201, res);
     }
     else {
-        res.status(400).json({
+        res.status(200).json({
             resObj
         });
     }
@@ -114,7 +158,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     if (!token) {
         return next(new AppError('You are not logged in 🙃🙃🙃!!', 401));
     }
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_ACCESS_SECRET);
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
         return next(new AppError('This user belonging to this token does not no longer exist. ', 401));
