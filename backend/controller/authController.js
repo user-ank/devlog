@@ -26,20 +26,21 @@ const createSendToken = async (user, statusCode, res) => {
 
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
-        httpOnly: true
+        httpOnly: true,
+        // secure: true
     }
 
-    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+    // if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
     res.cookie('jwt', refreshToken, cookieOptions);
     user.password = undefined;
 
     res.status(statusCode).json({
         status: 'success',
         accessToken,
-        refreshToken,
-        data: {
-            user
-        }
+        // refreshToken,
+        // data: {
+        //     user
+        // }
     });
 }
 
@@ -55,8 +56,9 @@ exports.renewAccessToken = catchAsync(async (req, res, next) => {
 
     let decoded;
     if (refreshToken) {
-        const valid = UserToken.find({ token: refreshToken });
+        const valid = await UserToken.findOne({ token: refreshToken });
         if (valid) {
+            // console.log("humm hm");
             decoded = await promisify(jwt.verify)(refreshToken, process.env.JWT_RFRESH_SECRET);
         } else {
             res.status(404).json({
@@ -76,6 +78,31 @@ exports.renewAccessToken = catchAsync(async (req, res, next) => {
     });
 });
 
+
+exports.logOut = catchAsync(async (req, res, next) => {
+    // const refreshToken = req.body.token;
+
+    const cookies = req.cookies;
+    if (!cookies?.jwt) return res.sendStatus(204); // No content
+    const refreshToken = cookies.jwt;
+
+
+    const userToken = await UserToken.findOne({ token: refreshToken });
+
+    if (!userToken) {
+        // console.log("uooooo");
+        return res
+            .status(200)
+            .json({ error: false, message: "Logged Out Sucessfully" });
+    }
+
+    await userToken.remove();
+
+    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+
+	res.status(200).json({ error: false, message: "Logged Out Sucessfully" });
+
+})
 
 
 exports.checkPassAndUserID = catchAsync(async (req, res, next) => {
@@ -169,6 +196,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.user = currentUser;
     next();
 });
+
 
 exports.forgetPassword = catchAsync(async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });

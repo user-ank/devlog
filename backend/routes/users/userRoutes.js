@@ -19,7 +19,7 @@ const {
 
 const isAdmin=require("../../middlewares/isAdmin");
 
-const {signup,login,protect,forgetPassword,resetPassword,updatePassword,checkPassAndUserID,renewAccessToken} = require("../../controller/authController");
+const {signup,login,protect,forgetPassword,resetPassword,updatePassword,checkPassAndUserID,renewAccessToken,logOut} = require("../../controller/authController");
 
 const userRouter = express.Router();
 
@@ -34,6 +34,7 @@ userRouter.post("/checkPassAndUserID",checkPassAndUserID)
 userRouter.post("/renewAccessToken",renewAccessToken)
 
 userRouter.use(protect);
+userRouter.delete("/logOut", logOut);
 userRouter.patch("/updatePassword", updatePassword);
 
 userRouter.get("/",usersCtrl);
