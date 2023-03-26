@@ -4,11 +4,17 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 dotenv.config({ path: "./config/config.env" });
 const dbConnect = require("./config/db");
+const corsOptions = require('./utils/corsOptions');
+const cookieParser = require('cookie-parser');
+const credentials = require('./middlewares/credentials');
 const app = express();
 const globalErrHandler = require("./middlewares/globalErrHandler");
 const port = process.env.PORT || 8000;
 
-app.use(cors());
+app.use(credentials);
+app.use(cors(corsOptions));
+// app.use(cors());
+
 //middleware
 
 app.use(express.json()); //pass incoming payload
@@ -37,7 +43,6 @@ app.use("*", (req, res) => {
 });
 
 app.listen(port, () => {
-
   console.log(`app is listening on ${port}`);
   dbConnect()
 });
