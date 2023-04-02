@@ -27,20 +27,24 @@ const createSendToken = async (user, statusCode, res) => {
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
         httpOnly: true,
+        sameSite: 'None',
         // secure: true
     }
 
     // if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-    res.cookie('jwt', refreshToken, cookieOptions);
+    
+    // res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
     user.password = undefined;
-
+    
+    res.cookie('jwt', refreshToken, cookieOptions);
+    // res.cookie('hello', 'fuckall');
     res.status(statusCode).json({
         status: 'success',
         accessToken,
-        // refreshToken,
-        // data: {
-        //     user
-        // }
+        refreshToken,
+        data: {
+            profilePhoto: user.profilePhoto
+        }
     });
 }
 
@@ -51,6 +55,8 @@ exports.renewAccessToken = catchAsync(async (req, res, next) => {
     // console.log(refreshToken);
 
     const cookies = req.cookies
+    // console.log(req);
+    console.log(cookies);
     if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
     const refreshToken = cookies.jwt
 
@@ -73,8 +79,11 @@ exports.renewAccessToken = catchAsync(async (req, res, next) => {
 
     const accessToken = signToken(decoded.id, process.env.JWT_ACCESS_SECRET, process.env.JWT_ACCESS_EXPIRES_IN);
 
+    const x = await User.findById(decoded.id);
+    // console.log(decoded.id);
     return res.status(201).json({
-        accessToken: accessToken
+        accessToken: accessToken,
+        profilePhoto: x.profilePhoto
     });
 });
 

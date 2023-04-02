@@ -6,6 +6,7 @@ a{
     font-family: "Poppins";
     border-top: 0.5px solid rgb(218, 218, 218);
     padding: 25px 20px;
+    /* font-stretch: expanded; */
 }
 .blogHeader{
     display: flex;
@@ -51,10 +52,10 @@ a{
     border: 0.5px solid rgb(218, 218, 218);
 }
 .blogBodyTitle{
-    font-weight: 600;
+    font-weight: 700;
     font-size: 23px;
 }
 .blogBodyContent{
     color: #525054;
-    font-stretch: semi-condensed;
+    line-height: 23px;
 }

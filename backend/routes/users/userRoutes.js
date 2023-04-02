@@ -31,10 +31,10 @@ userRouter.post("/login", login);
 userRouter.post("/forget", forgetPassword);
 userRouter.patch("/reset/:token", resetPassword);
 userRouter.post("/checkPassAndUserID",checkPassAndUserID)
-userRouter.post("/renewAccessToken",renewAccessToken)
+userRouter.get("/renewAccessToken",renewAccessToken)
+userRouter.delete("/logOut", logOut);
 
 userRouter.use(protect);
-userRouter.delete("/logOut", logOut);
 userRouter.patch("/updatePassword", updatePassword);
 
 userRouter.get("/",usersCtrl);

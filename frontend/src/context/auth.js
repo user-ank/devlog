@@ -14,9 +14,10 @@ export const AuthProvider = ({ children }) => {
     function login(user) {
         setUser(user);
     }
+
     function logout() {
         setUser(null);
-        navigate('/devlog');
+        navigate('/');
     }
 
     // function googleSignIn(){

@@ -20,8 +20,9 @@ function Profile() {
 
     return (
     <div>
-        Hello {auth.user} ! <br/>
+        Hello {auth.user.email} ! <br/>
         Here would be Your profile
+        Your access token is {auth.user.accessToken}
     </div>
   )
 }

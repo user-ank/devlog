@@ -36,7 +36,7 @@ function BlogHome(prop) {
 						<div className='blogBodyContentDiv'>
 							<div className='blogBodyTitle'>{blog.title}</div>
 							<div className='blogBodyMinRead'>{5} min read</div>
-							<div className='blogBodyContent'>{blog.content.substring(0,300)+"..."}</div>
+							<div className='blogBodyContent'>{blog.content.substring(0,200)+"..."}</div>
 						</div>
 						<div className='blogBodyImageDiv'> {/*  put image here */}
 							{blog.ContainImage ? <img className='blogBodyImage' src={blog.photo}/> : null}

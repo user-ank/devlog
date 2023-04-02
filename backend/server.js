@@ -14,7 +14,7 @@ const port = process.env.PORT || 8000;
 app.use(credentials);
 app.use(cors(corsOptions));
 // app.use(cors());
-
+app.use(cookieParser());
 //middleware
 
 app.use(express.json()); //pass incoming payload

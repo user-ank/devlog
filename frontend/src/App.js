@@ -3,8 +3,10 @@ import Home from './components/pages/HomePage/Home';
 import Events from './components/pages/Events';
 import Groups from './components/pages/Groups';
 import Notifications from './components/pages/Notifications';
-import Login from './components/pages/login'
+import Login from './components/pages/Authentication/login'
 import NotFound from './components/pages/NotFound';
+import Users from './components/Users';
+import PersistLogin from './components/PersistLogin';
 
 import {Routes, Route, Navigate} from "react-router-dom";
 import { AuthProvider } from './context/auth';
@@ -12,6 +14,7 @@ import RequireAuth from './context/RequireAuth';
 import Profile from './components/pages/Profile';
 import BlogPage from './components/pages/BlogPage';
 import User from './components/pages/UserPage/User';
+import Signup from './components/pages/Authentication/Signup';
 
 function App() {
   return (
@@ -22,13 +25,19 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/devlog" />}/>
           <Route path='/devlog' exact  element={<Home/>}/>
+          <Route path='/devlog/signup' element={<Signup/>} />
           <Route path='/devlog/login' exact  element={<Login/>}/>
-          <Route path='/devlog/events' element={<RequireAuth><Events/></RequireAuth>}/>
-          <Route path='/devlog/groups' element={<RequireAuth><Groups/></RequireAuth>}/>
-          <Route path='/devlog/notifications' element={<RequireAuth><Notifications/></RequireAuth>}/>
-          <Route path='/devlog/profile' element={<RequireAuth><Profile/></RequireAuth>}/>
+
+          <Route element={<PersistLogin/>}>
+            <Route path='/devlog/events' element={<RequireAuth><Events/></RequireAuth>}/>
+            <Route path='/devlog/users' element={<RequireAuth><Users/></RequireAuth>}/>
+            <Route path='/devlog/groups' element={<RequireAuth><Groups/></RequireAuth>}/>
+            <Route path='/devlog/notifications' element={<RequireAuth><Notifications/></RequireAuth>}/>
+            <Route path='/devlog/profile' element={<RequireAuth><Profile/></RequireAuth>}/>
+          </Route>
           <Route path='/devlog/:username/' element={<User/>} />
           <Route path='/devlog/:username/:blogTitle' element={<BlogPage/>}/>
+
           <Route path='*' element={<NotFound/>}/>
         </Routes>
       </AuthProvider>
