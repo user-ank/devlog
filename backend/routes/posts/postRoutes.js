@@ -14,6 +14,7 @@ const {
   toggleDisLikesPostCtrl,
   postDetailsCtrl,
   userPostsCtrl,
+  BookmarkPostCtrl
 } = require("../../controller/post/postCtrl");
 
 const isLogin = require("../../middlewares/isLogin");
@@ -40,5 +41,7 @@ postRouter.delete("/:id",deletePostCtrl);
 postRouter.put("/:id", upload.single("image"), updatePostCtrl);
 
 postRouter.get("/:id", postDetailsCtrl);
+
+postRouter.get("/bookmark/:id",BookmarkPostCtrl);
 
 module.exports = postRouter;

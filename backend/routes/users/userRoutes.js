@@ -14,6 +14,7 @@ const {
   adminUnBlockUsersCtrl,
   updatePasswordCtrl,
   userProfileByUserNameCtrl,
+  BookmarkedPostCtrl,
 } = require("../../controller/user/userCtrl");
 
 
@@ -47,6 +48,14 @@ userRouter.get("/profile-viewers/:id",whoViewedMyProfileCtrl);
 userRouter.get("/following/:id",followingCtrl);
 userRouter.get("/unfollowing/:id",unFollowCtrl);
 
+userRouter.get("/bookmarkedPost",BookmarkedPostCtrl)
+//GET/api/v1/users/blocked/:id
+// userRouter.get("/block/:id",blockUsersCtrl);
+
+//GET/api/v1/users/unblock/:id
+// userRouter.get("/unblock/:id",unblockUserCtrl);
+
+
 //Delete/api/v1/users/delete-account
 userRouter.delete("/delete-account", deleteUserAccountCtrl);
 
@@ -64,5 +73,8 @@ userRouter.put("/admin-unblock/:id",isAdmin,adminUnBlockUsersCtrl);
 
 //put/api/v1/users/admin-block/:id
 userRouter.put("/admin-block/:id",isAdmin,adminBlockUsersCtrl);
+
+
+
 
 module.exports = userRouter;

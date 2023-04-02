@@ -2,10 +2,11 @@ const Post = require("../../model/post/post");
 const User = require("../../model/user/user");
 const Category = require("../../model/category/category");
 const appErr = require("../../utils/appErr");
-const APIFeatures = require('./../../utils/API Features');
+const APIFeatures = require("./../../utils/API Features");
 
 const createPostCtrl = async (req, res, next) => {
-  const { title, subtitle, category, content, minute_read, ContainImage, } = req.body;
+  const { title, subtitle, category, content, minute_read, ContainImage } =
+    req.body;
 
   try {
     const author = await User.findById(req.userAuth);
@@ -15,6 +16,25 @@ const createPostCtrl = async (req, res, next) => {
       return next(appErr("access denied ,account blocked", 403));
     }
 
+    const TITLE = title;
+
+    let ltext = TITLE;
+    let text = ltext.toLowerCase();
+    let Len = text.length;
+
+    let str = "";
+
+    for (let i = 0; i < Len; i++) {
+      if (
+        (text[i] >= "A" && text[i] <= "Z") ||
+        (text[i] >= "a" && text[i] <= "z")
+      ) {
+        str = str + text[i];
+      } else {
+        str = str + "-";
+      }
+    }
+    url_title = str;
     const postCreated = await Post.create({
       title,
       subtitle,
@@ -22,6 +42,7 @@ const createPostCtrl = async (req, res, next) => {
       user: author._id,
       category,
       content,
+      url_title,
       minute_read,
 
       photo: req && req.file && req.file.path,
@@ -44,7 +65,6 @@ const createPostCtrl = async (req, res, next) => {
 //for all post
 const fetchPostCtrl = async (req, res, next) => {
   try {
-
     const posts = new APIFeatures(Post.find({}).populate("user"), req.query)
       .filter()
       .sort()
@@ -53,17 +73,15 @@ const fetchPostCtrl = async (req, res, next) => {
 
     const doc = await posts.query;
 
-  
     res.json({
       status: "success",
       data: {
-        doc
+        doc,
       },
     });
   } catch (error) {
     next(appErr(error.message));
   }
-
 };
 
 const userPostsCtrl = async (req, res, next) => {
@@ -75,7 +93,9 @@ const userPostsCtrl = async (req, res, next) => {
     if (USer.length > 0) {
       const user_id = USer[0]._id;
 
-      const UsersPost = await Post.find({ user: user_id }).sort({createdAt:-1});
+      const UsersPost = await Post.find({ user: user_id }).sort({
+        createdAt: -1,
+      });
 
       res.status(200).json({
         status: "success",
@@ -91,8 +111,6 @@ const userPostsCtrl = async (req, res, next) => {
     next(appErr(error.message));
   }
 };
-
-
 
 //toogle likes
 
@@ -152,7 +170,6 @@ const toggleDisLikesPostCtrl = async (req, res, next) => {
   }
 };
 
-
 // for viewing single post
 const postDetailsCtrl = async (req, res) => {
   try {
@@ -174,11 +191,6 @@ const postDetailsCtrl = async (req, res) => {
   }
 };
 
-
-
-
-
-
 //Delete/api/v1/posts/:id
 const deletePostCtrl = async (req, res, next) => {
   try {
@@ -190,7 +202,7 @@ const deletePostCtrl = async (req, res, next) => {
     await Post.findByIdAndDelete(req.paramsid);
     res.json({
       status: "success",
-      data: "post successfully delted",
+      data: "post successfully deleted",
     });
   } catch (error) {
     next(appErr(error.message));
@@ -226,6 +238,46 @@ const updatePostCtrl = async (req, res, next) => {
   }
 };
 
+
+const BookmarkPostCtrl = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    const user = await User.findById(req.userAuth);
+    const Is_Bookmarked = post.is_Bookmared.includes(req.userAuth);
+    
+    if (Is_Bookmarked) {
+      post.is_Bookmared = post.is_Bookmared.filter(
+        (is_Bookmared) => is_Bookmared.toString() != req.userAuth.toString()
+      );
+     
+      user.Bookmarked_Post = user.Bookmarked_Post.filter(
+        (Bookmarked_Post) => Bookmarked_Post.toString() != req.params.id.toString()
+      );
+     
+      
+      await post.save();
+      await user.save();
+    } else {
+      //agar user like nhi kiya hai ye vala post pehle tb.......
+      post.is_Bookmared.push(req.userAuth);
+      user.Bookmarked_Post.push(req.params.id)
+
+      await post.save();
+      await user.save();
+    }
+
+    res.json({
+      status: "success",
+      data:post,
+    });
+  } catch (error) {
+    next(appErr(error.message));
+  }
+};
+
+
+
 module.exports = {
   createPostCtrl,
 
@@ -237,4 +289,5 @@ module.exports = {
   toggleDisLikesPostCtrl,
   postDetailsCtrl,
   userPostsCtrl,
+  BookmarkPostCtrl
 };
