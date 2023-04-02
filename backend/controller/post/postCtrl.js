@@ -51,7 +51,11 @@ const fetchPostCtrl = async (req, res, next) => {
       .limitFields()
       .paginations();
 
-    const doc = await posts.query;
+    // const posts = await Post.find({});
+    const doc =  await posts.query;
+
+
+
 
   
     res.json({

@@ -5,16 +5,17 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 4rem;
     border-radius: 30px;
     background-color:rgb(242, 243, 237);
-    margin: 10px 20px 10px 20px;
+    margin: auto;
+    margin-bottom: 3rem;
     padding: 30px;
     width: fit-content;
 }
 
 .ph-posts-contents {
     width: 500px;
+    padding-right: 2rem;
 }
 
 .ph-posts-title {
@@ -40,7 +41,11 @@ body{
 .ph-posts-description{
     font-size: 1.2rem;
 }
+
 .ph-posts-image>img {
+    /* padding-left: 2rem; */
+    max-width: 300px;
+    max-height: 200px;
+    border-radius: 15px;
     width: 300px;
-    padding-left: 2rem;
 }
