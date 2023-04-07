@@ -3,43 +3,37 @@ const User = require("../../model/user/user");
 const Category = require("../../model/category/category");
 const appErr = require("../../utils/appErr");
 const APIFeatures = require('./../../utils/API Features');
+const catchAsync = require('./../../utils/catchAsync');
 
-const createPostCtrl = async (req, res, next) => {
+const createPostCtrl = catchAsync(async (req, res, next) => {
   const { title, subtitle, category, content, minute_read, ContainImage, } = req.body;
+  const author = await User.findById(req.user);
+  // console.log(req.user);
 
-  try {
-    const author = await User.findById(req.userAuth);
-    //check kr leta hun kahin user blocked to nhi hai n ...admin se
+  const summary = content.substring(0, 200);
 
-    if (author.isBlocked) {
-      return next(appErr("access denied ,account blocked", 403));
-    }
+  const postCreated = await Post.create({
+    title,
+    subtitle,
+    summary,
+    ContainImage,
+    user: author._id,
+    category,
+    content,
+    minute_read,
+    photo: req && req.file && req.file.path,
+  });
+  
+  author.posts.push(postCreated._id);
+  await author.save();
 
-    const postCreated = await Post.create({
-      title,
-      subtitle,
-      ContainImage,
-      user: author._id,
-      category,
-      content,
-      minute_read,
-
-      photo: req && req.file && req.file.path,
-    });
-
-    //associate user to a post created .....abe ye post user k posts field m push kr dete hain
-
-    author.posts.push(postCreated);
-
-    await author.save();
-    res.json({
-      status: "success",
-      data: postCreated,
-    });
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
+  res.status(201).json({
+    status: "success",
+    data: {
+      data: postCreated
+    },
+  });
+});
 
 //for all post
 const fetchPostCtrl = async (req, res, next) => {
@@ -51,14 +45,34 @@ const fetchPostCtrl = async (req, res, next) => {
       .limitFields()
       .paginations();
 
-    const doc = await posts.query;
+    const doc1 = await posts.query;
 
-  
+    let doc = [];
+
+    doc1.map((obj) => {
+      doc.push(
+        {
+          title: obj.title,
+          id: obj._id,
+          content: obj.summary,
+          minRead: obj.minute_read,
+          photo: obj.photo,
+          user: {
+            userName: obj.user.userName,
+            name: obj.user.name,
+            userId: obj.user._id
+          },
+          updatedAt: obj.updatedAt,
+          ContainImage:obj.containImage
+        }
+      )
+    })
+
     res.json({
       status: "success",
-      data: {
+      data:{
         doc
-      },
+      }
     });
   } catch (error) {
     next(appErr(error.message));
@@ -75,7 +89,7 @@ const userPostsCtrl = async (req, res, next) => {
     if (USer.length > 0) {
       const user_id = USer[0]._id;
 
-      const UsersPost = await Post.find({ user: user_id }).sort({createdAt:-1});
+      const UsersPost = await Post.find({ user: user_id }).sort({ createdAt: -1 });
 
       res.status(200).json({
         status: "success",
@@ -182,6 +196,8 @@ const postDetailsCtrl = async (req, res) => {
 //Delete/api/v1/posts/:id
 const deletePostCtrl = async (req, res, next) => {
   try {
+
+    // When user delete blog then we have to delete blog id from user model.
     const post = await Post.findById(req.params.id);
     if (post.user.toString() !== req.userAuth.toString()) {
       return next(appErr("you are not allowed to delte this post ", 403));

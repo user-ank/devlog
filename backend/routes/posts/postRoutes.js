@@ -16,29 +16,29 @@ const {
   userPostsCtrl,
 } = require("../../controller/post/postCtrl");
 
-const isLogin = require("../../middlewares/isLogin");
+const {protect} = require('./../../controller/authController');
 
-//file upload middleware
-const upload = multer({ storage });
-
+// const isLogin = require("../../middlewares/isLogin");
 postRouter.get("/",fetchPostCtrl);
 
+postRouter.use(protect);
+const upload = multer({ storage });
 postRouter.get("/:id",userPostsCtrl);
-
-postRouter.use(isLogin);
-
 postRouter.post("/",upload.single("image"), createPostCtrl);
 
-postRouter.get("/likes/:id",toggleLikesPostCtrl);
 
-postRouter.get("/disLikes/:id",toggleDisLikesPostCtrl);
 
-//Delete/api/v1/posts/:id
-postRouter.delete("/:id",deletePostCtrl);
-//put/api/v1/posts/:id
 
-postRouter.put("/:id", upload.single("image"), updatePostCtrl);
+// postRouter.get("/likes/:id",toggleLikesPostCtrl);
 
-postRouter.get("/:id", postDetailsCtrl);
+// postRouter.get("/disLikes/:id",toggleDisLikesPostCtrl);
+
+// //Delete/api/v1/posts/:id
+// postRouter.delete("/:id",deletePostCtrl);
+// //put/api/v1/posts/:id
+
+// postRouter.put("/:id", upload.single("image"), updatePostCtrl);
+
+// postRouter.get("/:id", postDetailsCtrl);
 
 module.exports = postRouter;

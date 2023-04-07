@@ -12,6 +12,9 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: [true, "Subtitle Title is required"],
   },
+  summary: {
+    type: String,
+  },
   minute_read: {
     type: String,
     required: [true, "Reading Time Title is required"],
