@@ -377,6 +377,21 @@ const profilePhotoUploadCtrl = async (req, res, next) => {
   }
 };
 
+const BookmarkedPostCtrl = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userAuth).populate("Bookmarked_Post");
+
+    const B_POST = user.Bookmarked_Post;
+
+    res.json({
+      status: "success",
+      data: B_POST,
+    });
+  } catch (error) {
+    next(appErr(error.message));
+  }
+};
+
 module.exports = {
   userProfileCtrl,
   usersCtrl,
@@ -392,4 +407,5 @@ module.exports = {
   adminUnBlockUsersCtrl,
   updatePasswordCtrl,
   userProfileByUserNameCtrl,
+  BookmarkedPostCtrl,
 };

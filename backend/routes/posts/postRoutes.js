@@ -14,9 +14,12 @@ const {
   toggleDisLikesPostCtrl,
   postDetailsCtrl,
   userPostsCtrl,
+  BookmarkPostCtrl
 } = require("../../controller/post/postCtrl");
 
-const isLogin = require("../../middlewares/isLogin");
+// const isLogin = require("../../middlewares/isLogin");
+
+const {protect} = require("./../../controller/authController")
 
 //file upload middleware
 const upload = multer({ storage });
@@ -25,7 +28,7 @@ postRouter.get("/",fetchPostCtrl);
 
 postRouter.get("/:id",userPostsCtrl);
 
-postRouter.use(isLogin);
+postRouter.use(protect);
 
 postRouter.post("/",upload.single("image"), createPostCtrl);
 
@@ -40,5 +43,7 @@ postRouter.delete("/:id",deletePostCtrl);
 postRouter.put("/:id", upload.single("image"), updatePostCtrl);
 
 postRouter.get("/:id", postDetailsCtrl);
+
+postRouter.get("/bookmark/:id",BookmarkPostCtrl);
 
 module.exports = postRouter;
