@@ -23,8 +23,9 @@ const postSchema = new mongoose.Schema({
   report_number: { type: String },
   is_Bookmared: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: Boolean,
+      default: false,
+      // ref: "User",
     },
   ],
   category: {

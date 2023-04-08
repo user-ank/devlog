@@ -3,6 +3,7 @@ const User = require("../../model/user/user");
 const Category = require("../../model/category/category");
 const appErr = require("../../utils/appErr");
 const APIFeatures = require("./../../utils/API Features");
+const { ConnectionStates } = require("mongoose");
 
 const createPostCtrl = async (req, res, next) => {
   const { title, subtitle, category, content, minute_read, ContainImage } =
@@ -238,45 +239,42 @@ const updatePostCtrl = async (req, res, next) => {
   }
 };
 
-
 const BookmarkPostCtrl = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id);
 
-    const user = await User.findById(req.userAuth);
-    const Is_Bookmarked = post.is_Bookmared.includes(req.userAuth);
-    
-    if (Is_Bookmarked) {
-      post.is_Bookmared = post.is_Bookmared.filter(
-        (is_Bookmared) => is_Bookmared.toString() != req.userAuth.toString()
-      );
-     
-      user.Bookmarked_Post = user.Bookmarked_Post.filter(
-        (Bookmarked_Post) => Bookmarked_Post.toString() != req.params.id.toString()
-      );
-     
-      
-      await post.save();
-      await user.save();
-    } else {
-      //agar user like nhi kiya hai ye vala post pehle tb.......
-      post.is_Bookmared.push(req.userAuth);
-      user.Bookmarked_Post.push(req.params.id)
+    const user = await User.findById(req.user);
 
-      await post.save();
+    const bp = user.Bookmarked_Post.includes(req.params.id);
+    // cobnst Is_Bookmarked = post.is_Bookmared.includes(req.userAuth);
+
+    // console.log(bp);
+    if (bp) {
+      user.Bookmarked_Post = user.Bookmarked_Post.filter(
+        (Bookmarked_Post) =>
+          Bookmarked_Post.toString() != req.params.id.toString()
+      );
+     
+      await user.save();
+      return(res.status(201).json({
+        status:"success",
+        data:"bookmarked removed"
+      }));
+    } else {
+      user.Bookmarked_Post.push(req.params.id);
+   
       await user.save();
     }
 
-    res.json({
+    res.status(200).json({
+      
       status: "success",
-      data:post,
+      data: "successfully bookmarked",
     });
   } catch (error) {
     next(appErr(error.message));
   }
 };
-
-
 
 module.exports = {
   createPostCtrl,
@@ -289,5 +287,5 @@ module.exports = {
   toggleDisLikesPostCtrl,
   postDetailsCtrl,
   userPostsCtrl,
-  BookmarkPostCtrl
+  BookmarkPostCtrl,
 };
