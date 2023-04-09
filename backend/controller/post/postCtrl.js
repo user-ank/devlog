@@ -23,7 +23,7 @@ const createPostCtrl = catchAsync(async (req, res, next) => {
     minute_read,
     photo: req && req.file && req.file.path,
   });
-  
+
   author.posts.push(postCreated._id);
   await author.save();
 
@@ -47,6 +47,7 @@ const fetchPostCtrl = async (req, res, next) => {
 
     const doc1 = await posts.query;
 
+
     let doc = [];
 
     doc1.map((obj) => {
@@ -54,6 +55,7 @@ const fetchPostCtrl = async (req, res, next) => {
         {
           title: obj.title,
           id: obj._id,
+          likeCnt: obj.likes.length,
           content: obj.summary,
           minRead: obj.minute_read,
           photo: obj.photo,
@@ -63,14 +65,14 @@ const fetchPostCtrl = async (req, res, next) => {
             userId: obj.user._id
           },
           updatedAt: obj.updatedAt,
-          ContainImage:obj.containImage
+          ContainImage: obj.ContainImage
         }
       )
     })
 
     res.json({
       status: "success",
-      data:{
+      data: {
         doc
       }
     });
@@ -79,6 +81,135 @@ const fetchPostCtrl = async (req, res, next) => {
   }
 
 };
+
+
+const AuthecticatefetchPostCtrl = async (req, res, next) => {
+  try {
+
+    const posts = new APIFeatures(Post.find({}).populate("user"), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginations();
+
+    const doc1 = await posts.query;
+
+    const currentUser = await User.findById(req.user);
+
+
+    // CODE COMPLEXCITY I HAVE TO REDUCE.
+    currentUser.like.map(async (obj) => {
+      doc1.map(async (ele) => {
+        const x = ele._id.toString();
+        const y = obj.toString();
+        if (x == y) {
+          ele.isLike = true;
+        }
+      })
+    });
+
+    // doc1.map(async (obj) => {
+    //   currentUser.bookmarks.map(async (ele) => {
+    //     const x = ele.toString();
+    //     const y = obj._id.toString();
+    //     if (x == y) {
+    //       ele.isBookmarked = true;
+    //     }
+    //   })
+    // });
+
+    currentUser.Bookmarked_Post.map(async (obj) => {
+      doc1.map(async (ele) => {
+        const x = ele._id.toString();
+        const y = obj.toString();
+        if (x == y) {
+          ele.isBookmarked = true;
+        }
+      })
+    });
+
+    let doc = [];
+
+    doc1.map((obj) => {
+      doc.push(
+        {
+          title: obj.title,
+          id: obj._id,
+          isLike: obj.isLike,
+          isBookmarked: obj.isBookmarked,
+          likeCnt: obj.likes.length,
+          content: obj.summary,
+          minRead: obj.minute_read,
+          photo: obj.photo,
+          user: {
+            userName: obj.user.userName,
+            name: obj.user.name,
+            userId: obj.user._id
+          },
+          updatedAt: obj.updatedAt,
+          ContainImage: obj.ContainImage
+        }
+      )
+    })
+
+    res.json({
+      status: "success",
+      data: {
+        doc
+      }
+    });
+  } catch (error) {
+    next(appErr(error.message));
+  }
+
+};
+
+const likeCtrl = catchAsync(async (req, res, next) => {
+  const currentUser = await User.findById(req.user);
+
+  if (!currentUser.like.includes(req.params.id)) {
+    currentUser.like.push(req.params.id);
+    await currentUser.save();
+    await Post.findByIdAndUpdate(req.params.id, { $push: { "likes": currentUser.id } }, { safe: true, upsert: true, new: true })
+
+    res.status(200).json({
+      message: "successfully liked"
+    });
+  }
+  else{
+    currentUser.like = currentUser.like.filter(item => item.toString() !== req.params.id.toString())
+    await currentUser.save();
+    await Post.findByIdAndUpdate(req.params.id, { $pull: { "likes": currentUser.id } }, { safe: true, upsert: true, new: true })
+
+    res.status(200).json({
+      message: "successfully like removed"
+    });
+  }
+
+});
+
+
+// const bookmarksCtrl = catchAsync(async(req,res,next) => {
+//   const currentUser = await User.findById(req.user);
+
+//   if (!currentUser.bookmarks.includes(req.params.id)) {
+//     currentUser.bookmarks.push(req.params.id);
+//     await currentUser.save();
+
+//     res.status(200).json({
+//       message: "successfully bookmarked"
+//     });
+//   }
+//   else{
+//     currentUser.bookmarks = currentUser.bookmarks.filter(item => item.toString() !== req.params.id.toString())
+//     await currentUser.save();
+
+//     res.status(200).json({
+//       message: "successfully bookmark removed"
+//     });
+//   }
+
+// });
 
 const userPostsCtrl = async (req, res, next) => {
   const UserName = req.params;
@@ -110,32 +241,32 @@ const userPostsCtrl = async (req, res, next) => {
 
 //toogle likes
 
-const toggleLikesPostCtrl = async (req, res, next) => {
-  try {
-    const post = await Post.findById(req.params.id);
+// const toggleLikesPostCtrl = async (req, res, next) => {
+//   try {
+//     const post = await Post.findById(req.params.id);
 
-    //check kr rhe hai ki kahin agar user pehle se ye post like kr chuka hoga to...
-    const isLiked = post.likes.includes(req.userAuth);
+//     //check kr rhe hai ki kahin agar user pehle se ye post like kr chuka hoga to...
+//     const isLiked = post.likes.includes(req.userAuth);
 
-    if (isLiked) {
-      post.likes = post.likes.filter(
-        (likes) => likes.toString() != req.userAuth.toString()
-      );
-      await post.save();
-    } else {
-      //agar user like nhi kiya hai ye vala post pehle tb.......
-      post.likes.push(req.userAuth);
-      await post.save();
-    }
+//     if (isLiked) {
+//       post.likes = post.likes.filter(
+//         (likes) => likes.toString() != req.userAuth.toString()
+//       );
+//       await post.save();
+//     } else {
+//       //agar user like nhi kiya hai ye vala post pehle tb.......
+//       post.likes.push(req.userAuth);
+//       await post.save();
+//     }
 
-    res.json({
-      status: "success",
-      data: post,
-    });
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
+//     res.json({
+//       status: "success",
+//       data: post,
+//     });
+//   } catch (error) {
+//     next(appErr(error.message));
+//   }
+// };
 
 //toggle dislikes
 
@@ -190,9 +321,6 @@ const postDetailsCtrl = async (req, res) => {
 
 
 
-
-
-
 //Delete/api/v1/posts/:id
 const deletePostCtrl = async (req, res, next) => {
   try {
@@ -212,6 +340,8 @@ const deletePostCtrl = async (req, res, next) => {
     next(appErr(error.message));
   }
 };
+
+
 //put/api/v1/posts/:id
 const updatePostCtrl = async (req, res, next) => {
   const { title, description, category, photo } = req.body;
@@ -244,12 +374,12 @@ const updatePostCtrl = async (req, res, next) => {
 
 module.exports = {
   createPostCtrl,
-
+  likeCtrl,
   deletePostCtrl,
   updatePostCtrl,
-
+  AuthecticatefetchPostCtrl,
   fetchPostCtrl,
-  toggleLikesPostCtrl,
+  // bookmarksCtrl,
   toggleDisLikesPostCtrl,
   postDetailsCtrl,
   userPostsCtrl,

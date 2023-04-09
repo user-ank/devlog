@@ -39,7 +39,6 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-
     posts: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -52,6 +51,18 @@ const userSchema = new mongoose.Schema(
         ref: "Comment",
       },
     ],
+    like:[
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      }
+    ],
+    // bookmarks:[
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Post"
+    //   }
+    // ],
     userAward: {
       type: String,
       enum: ["Bronze", "Silver", "Gold"],

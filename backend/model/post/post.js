@@ -24,12 +24,12 @@ const postSchema = new mongoose.Schema({
     required: [true, "Content is required"],
   },
   report_number: { type: String },
-  is_Bookmared: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
+  // is_Bookmared: [
+  //   {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: "User",
+  //   },
+  // ],
   category: {
     type: String,
     required: [true, "Catagory is required"],

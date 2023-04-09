@@ -10,10 +10,11 @@ const {
   deletePostCtrl,
   updatePostCtrl,
   fetchPostCtrl,
-  toggleLikesPostCtrl,
+  // bookmarksCtrl,
   toggleDisLikesPostCtrl,
   postDetailsCtrl,
   userPostsCtrl,
+  AuthecticatefetchPostCtrl,likeCtrl
 } = require("../../controller/post/postCtrl");
 
 const {protect} = require('./../../controller/authController');
@@ -22,10 +23,12 @@ const {protect} = require('./../../controller/authController');
 postRouter.get("/",fetchPostCtrl);
 
 postRouter.use(protect);
+postRouter.get("/authenticateUser",AuthecticatefetchPostCtrl);
 const upload = multer({ storage });
 postRouter.get("/:id",userPostsCtrl);
 postRouter.post("/",upload.single("image"), createPostCtrl);
-
+postRouter.post("/likePost/:id",likeCtrl);
+// postRouter.post("/bookmarkPost/:id",bookmarksCtrl);
 
 
 
