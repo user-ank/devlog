@@ -72,7 +72,11 @@ const fetchPostCtrl = async (req, res, next) => {
       .limitFields()
       .paginations();
 
-    const doc = await posts.query;
+    // const posts = await Post.find({});
+    const doc =  await posts.query;
+
+
+
 
     res.json({
       status: "success",
@@ -94,9 +98,13 @@ const userPostsCtrl = async (req, res, next) => {
     if (USer.length > 0) {
       const user_id = USer[0]._id;
 
+<<<<<<< HEAD
       const UsersPost = await Post.find({ user: user_id }).sort({
         createdAt: -1,
       });
+=======
+      const UsersPost = await Post.find({ user: user_id }).sort({createdAt:-1}).populate("user");
+>>>>>>> e8f6cf609a61cb49d3709b1feba63ba0fbd614ba
 
       res.status(200).json({
         status: "success",

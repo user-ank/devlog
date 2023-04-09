@@ -39,7 +39,7 @@ function BlogHome(prop) {
 	return (
 		<div className='blogContainer'>
 				<div className='blogHeader'>
-					<img className='blogHeaderImage' />
+					<img className='blogHeaderImage' src={blog.user.profilePhoto} alt='blogHeader'/>
 					
 					<Link to={"/devlog/" + blog.user.userName}>
 						<div className='blogHeaderNameTimeDiv'>
