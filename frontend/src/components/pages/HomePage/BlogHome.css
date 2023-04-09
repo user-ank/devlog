@@ -59,3 +59,16 @@ a{
     color: #525054;
     line-height: 23px;
 }
+.blogBodyMinRead{
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+.bookmarkIcon{
+    cursor: pointer;
+    height: 25px;
+}
+.bookmarkmsg{
+    padding: 5px;
+    /* background-color: blue; */
+}
