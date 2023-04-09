@@ -3,6 +3,7 @@
 	padding: 0;
 	box-sizing: border-box;
 }
+
 /* a{
 	height: 15px;
 	width: 15px;
@@ -78,7 +79,7 @@ header {
 	/* transition:  1s; */
 	outline: none;
 	color: rgb(61, 61, 61);
-	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-family: Arial, sans-serif;
 	font-size: 14px;
 }
 
@@ -147,12 +148,13 @@ nav {
 
 #login {
 	margin-right: 20px;
-	margin-left:  50px;
+	margin-left: 50px;
 	flex-shrink: 0;
-	
+
 	/* display: none; */
 }
-#loginImgDiv{
+
+#loginImgDiv {
 	flex-shrink: 0;
 	position: relative;
 	left: 3%;
@@ -161,7 +163,7 @@ nav {
 	align-items: center;
 }
 
-#logoutButton{
+#logoutButton {
 	padding: 0 8px;
 	padding-right: 0;
 	margin: 0 15px;
@@ -178,32 +180,35 @@ nav {
 	border-radius: 50%;
 	/* margin: 0 20px; */
 }
-#roller{
+
+#roller {
 	height: 28px;
 	margin-left: 20px;
 }
 
-.loader{
-    height: 2.5px;
-    border-radius: 3px;
-    background-color:  #ff3522;
-    position:fixed;
-    top: 0px;
+.loader {
+	height: 2.5px;
+	border-radius: 3px;
+	background-color: #ff3522;
+	position: fixed;
+	top: 0px;
 	z-index: 100;
-    visibility: hidden;
-    width: 10%;
+	visibility: hidden;
+	width: 10%;
 	transition: width 2.5s ease-in;
 }
-.eighty{
+
+.eighty {
 	width: 80%;
 	/* transition: width 1s ease-in; */
 }
-.hundred{
+
+.hundred {
 	width: 100%;
 	transition: width 0.2s ease-in;
 }
 
-.headerDiv{
+.headerDiv {
 	/* width: fit-content; */
 	border-radius: 5px;
 	padding: 20px 20px;
@@ -216,7 +221,8 @@ nav {
 	/* visibility: hidden; */
 
 }
-.logInSuccess{
+
+.logInSuccess {
 	visibility: hidden;
 	opacity: 0;
 	background-color: rgb(184, 255, 184);
@@ -224,15 +230,17 @@ nav {
 	transition: visibility 0.2s ease-in;
 	transition: opacity 0.2s ease-out;
 }
-.logOutSuccess{
-	background-color:rgb(184, 255, 184);
+
+.logOutSuccess {
+	background-color: rgb(184, 255, 184);
 	color: green;
 	visibility: hidden;
 	opacity: 0;
 	transition: visibility 0.2s ease-in;
 	transition: opacity 0.2s ease-in;
 }
-.wentWrong{
+
+.wentWrong {
 	opacity: 0;
 	background-color: #ffc8c3;
 	color: red;

@@ -79,7 +79,7 @@ const userPostsCtrl = async (req, res, next) => {
     if (USer.length > 0) {
       const user_id = USer[0]._id;
 
-      const UsersPost = await Post.find({ user: user_id }).sort({createdAt:-1});
+      const UsersPost = await Post.find({ user: user_id }).sort({createdAt:-1}).populate("user");
 
       res.status(200).json({
         status: "success",
