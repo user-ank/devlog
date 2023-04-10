@@ -24,12 +24,16 @@ const postSchema = new mongoose.Schema({
     required: [true, "Content is required"],
   },
   report_number: { type: String },
-  // is_Bookmared: [
-  //   {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     ref: "User",
-  //   },
-  // ],
+
+
+  is_Bookmared: [
+    {
+      type: Boolean,
+      default: false,
+      // ref: "User",
+    },
+  ],
+
   category: {
     type: String,
     required: [true, "Catagory is required"],
@@ -58,7 +62,11 @@ const postSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
     required: [true, "Please specify that your post contains an image or not"]
-  }
+  },
+  url_title: {
+    type: String,
+    unique: true,
+  },
 },
 
   {

@@ -14,10 +14,13 @@ const {
   toggleDisLikesPostCtrl,
   postDetailsCtrl,
   userPostsCtrl,
-  AuthecticatefetchPostCtrl,likeCtrl
+  AuthecticatefetchPostCtrl,likeCtrl,
+  BookmarkPostCtrl
 } = require("../../controller/post/postCtrl");
 
 const {protect} = require('./../../controller/authController');
+
+
 
 // const isLogin = require("../../middlewares/isLogin");
 postRouter.get("/",fetchPostCtrl);
@@ -31,7 +34,6 @@ postRouter.post("/likePost/:id",likeCtrl);
 // postRouter.post("/bookmarkPost/:id",bookmarksCtrl);
 
 
-
 // postRouter.get("/likes/:id",toggleLikesPostCtrl);
 
 // postRouter.get("/disLikes/:id",toggleDisLikesPostCtrl);
@@ -43,5 +45,7 @@ postRouter.post("/likePost/:id",likeCtrl);
 // postRouter.put("/:id", upload.single("image"), updatePostCtrl);
 
 // postRouter.get("/:id", postDetailsCtrl);
+
+postRouter.get("/bookmark/:id",BookmarkPostCtrl);
 
 module.exports = postRouter;

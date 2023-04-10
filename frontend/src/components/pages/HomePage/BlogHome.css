@@ -16,10 +16,11 @@ a{
 }
 .blogHeaderImage{
     border-radius: 50%;
-    height: 45px;
-    width: 45px;
+    height: 55px;
+    width: 55px;
     background-color: rgb(218, 218, 218);
-    padding: 5px; /* To be replaced by AvatarComponent later*/
+    padding: 2px; 
+    /* To be replaced by AvatarComponent later*/
 }
 .blogHeaderName{
     font-weight: 500;
@@ -58,4 +59,17 @@ a{
 .blogBodyContent{
     color: #525054;
     line-height: 23px;
+}
+.blogBodyMinRead{
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+.bookmarkIcon{
+    cursor: pointer;
+    height: 25px;
+}
+.bookmarkmsg{
+    padding: 5px;
+    /* background-color: blue; */
 }

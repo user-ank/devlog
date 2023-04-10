@@ -1,0 +1,51 @@
+import { PrivateAPI } from "../../api";
+import { useEffect } from "react";
+import useRefreshToken from "./useRefreshToken";
+import { useAuth } from "../../context/auth";
+
+
+function useAxiosPrivate(abortSignal) {
+
+    const refresh = useRefreshToken();
+    const { user } = useAuth();
+    const interceptController = new AbortController();
+
+    useEffect(() => {
+
+        const requestIntercept = PrivateAPI.interceptors.request.use(
+            config => {
+                if(!config.headers['Authorization']){
+                    config.headers['Authorization'] =  `Bearer ${user?.accessToken}`;
+                }
+                return config;
+            }, (err) => Promise.reject(err),
+            { signal: interceptController.signal }
+        );
+
+        const responseIntercept = PrivateAPI.interceptors.response.use(
+            response => response,
+            async (err) =>{
+                const prevRequest = err?.config;
+
+                if(err?.response.status === 500 && !prevRequest?.sent){
+                    prevRequest.sent = true;
+                    const newAccessToken = await refresh();
+                    prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                    return PrivateAPI(prevRequest);
+                }
+                return Promise.reject(err);
+            },
+            { signal: interceptController.signal }
+        );
+
+        return () => {
+            interceptController.abort();
+            PrivateAPI.interceptors.request.eject(requestIntercept);
+            PrivateAPI.interceptors.response.eject(responseIntercept);
+        }
+    },[user, refresh, abortSignal])
+    
+    return PrivateAPI;
+}
+
+export default useAxiosPrivate

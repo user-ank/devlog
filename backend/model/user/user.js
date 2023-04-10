@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please tell us your name! ']
     },
+
     userName: {
       type: String,
       required: [true, "userName is required"],
@@ -68,6 +69,7 @@ const userSchema = new mongoose.Schema(
       enum: ["Bronze", "Silver", "Gold"],
       default: "Bronze",
     },
+
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
@@ -75,7 +77,15 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
       select: false
-    }
+    },
+
+
+    Bookmarked_Post: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post"
+    }]
+
   },
   {
     timestamps: true,

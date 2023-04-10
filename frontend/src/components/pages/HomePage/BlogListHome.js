@@ -1,12 +1,12 @@
 import React from 'react'
 import BlogHome from './BlogHome'
 import './BlogListHome.css'
-// import { Link } from 'react-router-dom'
+
 
 function BlogListHome(props) {
 
-  let { blogs } = props; //  
-  console.log(blogs)
+  let { blogs } = props;   
+  
   return (
     <div className='homePageCenter'>
       {

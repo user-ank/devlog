@@ -24,11 +24,11 @@ function App() {
         <Header/>
         <Routes>
           <Route path="/" element={<Navigate to="/devlog" />}/>
-          <Route path='/devlog' exact  element={<Home/>}/>
           <Route path='/devlog/signup' element={<Signup/>} />
           <Route path='/devlog/login' exact  element={<Login/>}/>
 
           <Route element={<PersistLogin/>}>
+            <Route path='/devlog' exact  element={<Home/>}/>
             <Route path='/devlog/events' element={<RequireAuth><Events/></RequireAuth>}/>
             <Route path='/devlog/users' element={<RequireAuth><Users/></RequireAuth>}/>
             <Route path='/devlog/groups' element={<RequireAuth><Groups/></RequireAuth>}/>

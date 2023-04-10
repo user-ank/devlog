@@ -40,22 +40,22 @@ function Header() {
         try{
             setLoading(true);
             const response = await logout();
-            if(response.status == 200) 
-            {
-                console.log("Logged out successfully");
-                auth.logout();
-                setLoading(false);
-                
-                let element = document.getElementById("logOutSuccess");
-                element.style.visibility = "visible";
-                element.style.opacity = 1;
-                setTimeout(()=>{
-                    element.style.visibility = "hidden";
-                    element.style.opacity = 0;
-                },2500);
-            }
+           
+            console.log("Logged out successfully");
+            auth.logout();
+            setLoading(false);
+            
+            let element = document.getElementById("logOutSuccess");
+            element.style.visibility = "visible";
+            element.style.opacity = 1;
+            setTimeout(()=>{
+                element.style.visibility = "hidden";
+                element.style.opacity = 0;
+            },2500);
+            
         }
         catch(err){
+            wentWrongMsg();
             console.log(err);
         }
         
