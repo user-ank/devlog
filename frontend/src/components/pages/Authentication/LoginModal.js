@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as api from '../../../api/index'
 import './LoginModal.css';
 import { useAuth } from '../../../context/auth';
@@ -8,7 +8,7 @@ import { showSuccessMsg, wentWrongMsg } from '../../Header/Header';
 
 const initialState = { email: "", password: "" };
 
-export default function LoginModal() {
+export default function LoginModal(prop) {
 
     const auth = useAuth();                                 // to set user context
     const [loading, setLoading] = useState(false);          // is for loading effect on top of submit button
@@ -67,8 +67,7 @@ export default function LoginModal() {
                         accessToken: resObj.data.accessToken, 
                         profilePhoto: resObj.data.data.profilePhoto})
 
-                    navigate(redirectPath, { replace: true });
-
+                    prop.changeModal(false)
                     showSuccessMsg();
                 }       
             }
@@ -94,9 +93,12 @@ export default function LoginModal() {
 
         }
     }
+    
     return (
         <div className='modal'>
              <div className='loginPage'>
+                <div className='close' onClick={()=>{prop.changeModal(false)}}>Close</div>
+
                 <h3 className='loginName'>DEV<span className='ex'>log</span></h3>
                 <h4 className='loginName'>Sign In<hr /></h4>
 

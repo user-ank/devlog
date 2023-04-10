@@ -1,3 +1,24 @@
+.modal {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: fixed;
+    background:rgba(49,49,49,0.8);
+}
+
+.close{
+    cursor: pointer;
+    border-radius: 2px;
+    position: absolute;
+    right: 15px;
+    top: 25px;
+    padding: 5px 10px;
+    width: fit-content;
+    background-color: rgb(180, 180, 180);
+}
 .loginPage{
     margin: 0 auto;
     margin-top: 8vh;
