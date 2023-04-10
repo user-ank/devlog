@@ -12,6 +12,9 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: [true, "Subtitle Title is required"],
   },
+  summary: {
+    type: String,
+  },
   minute_read: {
     type: String,
     required: [true, "Reading Time Title is required"],
@@ -21,6 +24,8 @@ const postSchema = new mongoose.Schema({
     required: [true, "Content is required"],
   },
   report_number: { type: String },
+
+
   is_Bookmared: [
     {
       type: Boolean,
@@ -28,6 +33,7 @@ const postSchema = new mongoose.Schema({
       // ref: "User",
     },
   ],
+
   category: {
     type: String,
     required: [true, "Catagory is required"],

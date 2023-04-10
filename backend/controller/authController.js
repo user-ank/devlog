@@ -27,7 +27,7 @@ const createSendToken = async (user, statusCode, res) => {
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
         httpOnly: true,
-        sameSite: 'None',
+        sameSite: 'lax',
         secure: true
     }
 
@@ -56,7 +56,7 @@ exports.renewAccessToken = catchAsync(async (req, res, next) => {
 
     const cookies = req.cookies
     // console.log(req);
-    console.log(cookies);
+    // console.log(cookies);
     if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
     const refreshToken = cookies.jwt
 
