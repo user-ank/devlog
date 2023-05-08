@@ -10,7 +10,7 @@ function Navbar() {
 
         <nav>
             <Link to="/devlog/">  <HomeLink/>  </Link>
-            <Link to="/devlog/users">  <EventsLink/>  </Link>
+            <Link to="/devlog/events">  <EventsLink/>  </Link>
             <Link to="/devlog/groups"> <GroupsLink/>  </Link>
             <Link to="/devlog/notifications">  <NotificationsLink/>   </Link>
         </nav>

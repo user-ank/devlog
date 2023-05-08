@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import * as api from '../../../api/index'
 import './LoginModal.css';
 import { useAuth } from '../../../context/auth';
@@ -13,7 +13,7 @@ export default function LoginModal(prop) {
     const auth = useAuth();                                 // to set user context
     const [loading, setLoading] = useState(false);          // is for loading effect on top of submit button
     const [empty, setEmpty] = useState(false);              // is for giving warning
-
+    const navigate = useNavigate();
     const [formData, setFormData] = useState(initialState); //email and username would be kept here to posted.
 
     // To show invalid credentials warning.
@@ -68,6 +68,7 @@ export default function LoginModal(prop) {
                         profilePhoto: resObj.data.data.profilePhoto})
 
                     prop.changeModal(false)
+                    navigate("/");
                     showSuccessMsg();
                 }       
             }

@@ -34,8 +34,8 @@ function App() {
             <Route path='/devlog/groups' element={<RequireAuth><Groups/></RequireAuth>}/>
             <Route path='/devlog/notifications' element={<RequireAuth><Notifications/></RequireAuth>}/>
             <Route path='/devlog/profile' element={<RequireAuth><Profile/></RequireAuth>}/>
+            <Route path='/devlog/:username/' element={<User/>} />
           </Route>
-          <Route path='/devlog/:username/' element={<User/>} />
           <Route path='/devlog/:username/:blogTitle' element={<BlogPage/>}/>
 
           <Route path='*' element={<NotFound/>}/>

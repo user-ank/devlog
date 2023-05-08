@@ -15,7 +15,7 @@ function Profile_home_post(prop) {
         <div className="ph-posts-time">
           <div className="ph-posts-date">{post?.createdAt.substring(0,10)}</div>
           <div className="ph-posts-time-to-read"> <MenuBookIcon /> </div>
-          <div className="ph-posts-time-to-read">{Math.ceil(0.00546448087 * post?.content.split(" ").length)} minute read</div>
+          <div className="ph-posts-time-to-read">{post?.minute_read} minute read</div>
         </div>
         <div className="ph-posts-description">{post?.summary}</div>
       </div>

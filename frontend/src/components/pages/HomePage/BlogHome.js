@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { wentWrongMsg } from '../../Header/Header';
@@ -8,15 +8,35 @@ import LoginModal from '../Authentication/LoginModal';
 
 function BlogHome(prop) {
 	let { blog } = prop;
-	const PrivateAPI = useAxiosPrivate();
-	const [loginModal, setModal] = useState(false);
-	const [is_bookmarked, setBookmark] = useState(false);
-	const {user} = useAuth();
+	const PrivateAPI = useAxiosPrivate();				// it sends our access token with the request
+	
+	const [loginModal, setModal] = useState(false); 	// pops the modal to make users login
+	const [is_bookmarked, setBookmark] = useState(blog.isBookmarked ? true : false);	// to show if post is already bookmarked or not
+	const [is_liked, setLike] = useState(blog.isLike ? true : false);					// to show if post is already liked or not
+	const [likeCnt, changeLike] = useState(blog.likeCnt);
 
-	let blogTime = new Date(blog.updatedAt);
-	let curentTime = new Date();
-	let timeDiff = curentTime.getTime() - blogTime.getTime();
-	let time = new Date(timeDiff);
+	const bookmarkMsgRef = useRef();
+
+	const {user} = useAuth();							// to see if there is user present or not
+
+	function timeAgo(){
+		let blogTime = new Date(blog.updatedAt);
+		let curentTime = new Date();
+		let timeDiff = curentTime.getTime() - blogTime.getTime();
+		let time = new Date(timeDiff);
+
+		// if(time.getMinutes() < 1 && time.getHours <= 23 )
+		// 	return("a minute ago")
+		// else if(time.getMinutes() < 60)
+		// 	return (time.getMinutes() + " minutes ago");
+		// else if ( time.getMinutes() < 120)				// To be made later
+		// 	return ("an hour ago");
+		// console.log(blogTime.toDateString()+" "+time.getTime() + " " + time.getMinutes() + " " + time.getHours())
+		// if ( time.getHours <= 23)
+		// 	return (time.getHours() + " hours ago");
+		// else
+			return (blogTime.toDateString().substring(4))
+	}
 
 
 	async function bookmark()
@@ -25,6 +45,16 @@ function BlogHome(prop) {
 			setBookmark(prev => !prev);
 			const res = await PrivateAPI.get("/posts/bookmark/"+ blog.id);	
 			console.log(res);		
+			if(res.status === 200)
+			{
+				bookmarkMsgRef.current.style.visibility = "visible";
+				bookmarkMsgRef.current.style.opacity = 1;
+				setTimeout(()=>{
+					bookmarkMsgRef.current.style.visibility = "hidden";
+					bookmarkMsgRef.current.style.visibility = 0;
+			}, 2000)
+			}
+
 		}
 		catch(err)
 		{
@@ -45,6 +75,29 @@ function BlogHome(prop) {
 		}
 	}
 	
+	async function like(){
+		try{
+			setLike(prev => !prev);
+			is_liked ? changeLike(prev => prev - 1) : changeLike(prev => prev + 1)  
+			
+			const res = await PrivateAPI.post('posts/likePost/' + blog.id)
+			console.log(res);
+		}
+		catch(err)
+		{
+			console.log(err);
+		}
+	}
+	function handleLike(){
+		if(!user)
+		{
+			setModal(true);
+		}
+		else{
+			like();
+			console.log('ready to bookmark');
+		}
+	}
 
 	return (
 		<>
@@ -54,7 +107,7 @@ function BlogHome(prop) {
 					<div className='blogHeader'>
 						<img className='blogHeaderImage' src={blog.user.profilePhoto} alt='blogHeader'/>
 						
-						<Link to={"/devlog/" + blog.user.userName}>
+						<Link to={"/devlog/" + blog.user.userName} target="_blank" >
 							<div className='blogHeaderNameTimeDiv'>
 
 								<div className='blogHeaderName'>{blog.user.name}</div>
@@ -62,7 +115,7 @@ function BlogHome(prop) {
 								<div className='blogHeaderUsernameTimeDiv'>
 									<div className='blogHeaderUsername'>{blog.user.userName}</div>
 									<div className='dot'></div>
-									<div className='blogHederTimeago'>{blogTime.toDateString()}</div>
+									<div className='blogHederTimeago'>{timeAgo()}</div>
 								</div>
 							</div>
 						</Link>
@@ -73,8 +126,8 @@ function BlogHome(prop) {
 						<div className='blogBody'>
 							<div className='blogBodyContentDiv'>
 								<div className='blogBodyTitle'>{blog.title}</div>
-								<div className='blogBodyMinRead'>{blog.minute_read} min read</div>
-								<div className='blogBodyContent'>{blog.content.substring(0,200)+"..."}</div>
+								<div className='blogBodyMinRead'>{blog.minRead} min read</div>
+								<div className='blogBodyContent'>{blog.content}</div>
 							</div>
 							<div className='blogBodyImageDiv'> {/*  put image here */}
 								{blog.ContainImage ? <img className='blogBodyImage' src={blog.photo}/> : null}
@@ -83,12 +136,22 @@ function BlogHome(prop) {
 					</Link>
 
 				<div className='blogFooter'>
-					<img className='bookmarkIcon'
-						src={is_bookmarked ? require("../../img/bookmark.png") : require("../../img/bookmark-empty.png")}
-						onClick={handleBookmark}
-						/>
+					<div className='bookmarkIconDiv' onClick={handleBookmark}>
+						<img className='bookmarkIcon'
+							src={is_bookmarked ? require("../../img/bookmark.png") : require("../../img/bookmark-empty2.png")}
+							/>
+					</div>
+
+					<div className='heartIconDiv' onClick={handleLike}>
+						<img className='heartIcon'
+							src={is_liked ? require("../../img/heart-red3.png") : require("../../img/heart-empty2.png")}
+							/>
+						<span className='likeCnt'>{likeCnt}</span>
+					</div>
+
 				</div>
-				<div className='bookmarkmsg'>Bookmarked !</div>
+
+				<div ref={bookmarkMsgRef} className='bookmarkmsg'>Bookmarked !</div>
 			</div>
 		</>
 	)

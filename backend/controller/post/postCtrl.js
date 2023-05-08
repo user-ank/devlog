@@ -63,7 +63,8 @@ const fetchPostCtrl = async (req, res, next) => {
           user: {
             userName: obj.user.userName,
             name: obj.user.name,
-            userId: obj.user._id
+            userId: obj.user._id,
+            profilePhoto: obj.user.profilePhoto
           },
           updatedAt: obj.updatedAt,
           ContainImage: obj.ContainImage
@@ -144,7 +145,8 @@ const AuthecticatefetchPostCtrl = async (req, res, next) => {
           user: {
             userName: obj.user.userName,
             name: obj.user.name,
-            userId: obj.user._id
+            userId: obj.user._id,
+            profilePhoto: obj.user.profilePhoto
           },
           updatedAt: obj.updatedAt,
           ContainImage: obj.ContainImage

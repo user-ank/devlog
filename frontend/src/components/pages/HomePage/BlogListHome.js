@@ -13,7 +13,7 @@ function BlogListHome(props) {
         blogs.map((blog) => (
 
          
-            <BlogHome blog={blog} />
+            <BlogHome key={blog.id} blog={blog} />
        
 
         ))

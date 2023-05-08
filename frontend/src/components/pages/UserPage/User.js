@@ -29,7 +29,7 @@ function User() {
     loader.classList.add("eighty");
 
 
-    fetch("http://localhost:8000/api/v1/posts/" + username)
+    fetch("http://localhost:8000/api/v1/posts/user/" + username)
       .then(res => {
         return (res.json())
       })

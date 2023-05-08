@@ -7,7 +7,7 @@ const UserState = (props) => {
     const [userArray, setUserArray] = useState([]);
     useEffect(() => {
 
-        fetch("http://localhost:8000/api/v1/posts/"+ username )
+        fetch("http://localhost:8000/api/v1/posts/user/"+ username )
           .then(res => {
             return (res.json())
           })

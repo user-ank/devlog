@@ -24,11 +24,11 @@ const {protect} = require('./../../controller/authController');
 
 // const isLogin = require("../../middlewares/isLogin");
 postRouter.get("/",fetchPostCtrl);
+postRouter.get("/user/:id",userPostsCtrl);   // soln => change get to post method
 
 postRouter.use(protect);
 postRouter.get("/authenticateUser",AuthecticatefetchPostCtrl);
 const upload = multer({ storage });
-postRouter.get("/:id",userPostsCtrl);
 postRouter.post("/",upload.single("image"), createPostCtrl);
 postRouter.post("/likePost/:id",likeCtrl);
 // postRouter.post("/bookmarkPost/:id",bookmarksCtrl);
