@@ -6,11 +6,19 @@ const APIFeatures = require('./../../utils/API Features');
 const catchAsync = require('./../../utils/catchAsync');
 
 const createPostCtrl = catchAsync(async (req, res, next) => {
-  const { title, subtitle, category, content, minute_read, ContainImage, } = req.body;
+  const { title, subtitle, category, content, ContainImage } = req.body;
   const author = await User.findById(req.user);
   // console.log(req.user);
 
   const summary = content.substring(0, 200);
+
+  const creationTime = Date.now()
+
+  function countWords(str) {
+    return str.trim().split(/\s+/).length;
+  }
+
+  const minute_read = Math.ceil((countWords(content) / 2) / 60);
 
   const postCreated = await Post.create({
     title,
@@ -21,8 +29,15 @@ const createPostCtrl = catchAsync(async (req, res, next) => {
     category,
     content,
     minute_read,
+    creationTime,
     photo: req && req.file && req.file.path,
   });
+
+  if (postCreated.photo) {
+    // console.log(postCreated.ContainImage);
+    postCreated.ContainImage = true;
+    await postCreated.save();
+  }
 
   author.posts.push(postCreated._id);
   await author.save();
@@ -178,7 +193,7 @@ const likeCtrl = catchAsync(async (req, res, next) => {
       message: "successfully liked"
     });
   }
-  else{
+  else {
     currentUser.like = currentUser.like.filter(item => item.toString() !== req.params.id.toString())
     await currentUser.save();
     await Post.findByIdAndUpdate(req.params.id, { $pull: { "likes": currentUser.id } }, { safe: true, upsert: true, new: true })
@@ -222,7 +237,7 @@ const userPostsCtrl = async (req, res, next) => {
     if (USer.length > 0) {
       const user_id = USer[0]._id;
 
-      const UsersPost = await Post.find({ user: user_id }).sort({createdAt:-1}).populate("user");
+      const UsersPost = await Post.find({ user: user_id }).sort({ createdAt: -1 }).populate("user");
       res.status(200).json({
         status: "success",
 
@@ -238,36 +253,6 @@ const userPostsCtrl = async (req, res, next) => {
   }
 };
 
-//toogle likes
-
-// const toggleLikesPostCtrl = async (req, res, next) => {
-//   try {
-//     const post = await Post.findById(req.params.id);
-
-//     //check kr rhe hai ki kahin agar user pehle se ye post like kr chuka hoga to...
-//     const isLiked = post.likes.includes(req.userAuth);
-
-//     if (isLiked) {
-//       post.likes = post.likes.filter(
-//         (likes) => likes.toString() != req.userAuth.toString()
-//       );
-//       await post.save();
-//     } else {
-//       //agar user like nhi kiya hai ye vala post pehle tb.......
-//       post.likes.push(req.userAuth);
-//       await post.save();
-//     }
-
-//     res.json({
-//       status: "success",
-//       data: post,
-//     });
-//   } catch (error) {
-//     next(appErr(error.message));
-//   }
-// };
-
-//toggle dislikes
 
 const toggleDisLikesPostCtrl = async (req, res, next) => {
   try {
@@ -341,33 +326,61 @@ const deletePostCtrl = async (req, res, next) => {
 
 //put/api/v1/posts/:id
 const updatePostCtrl = async (req, res, next) => {
-  const { title, description, category, photo } = req.body;
+  const { title, subtitle, description, category, photo } = req.body;
   try {
     const post = await Post.findById(req.params.id);
 
     //check kr rhe hain ki yee post iss user se belong krta hai ki nhi
-    if (post.user.toString() !== req.userAuth.toString()) {
+    if (post.user.toString() !== req.user.toString()) {
       return next(appErr("you are not allowed to update this post ", 403));
     }
+
+    const summary = content.substring(0, 200);
+    const updateTime = Date.now()
+
 
     await Post.findByIdAndUpdate(
       req.params.id,
       {
         title,
+        subtitle,
+        summary,
+        updateTime,
         description,
         category,
         photo: req && req.file && req.file.path,
       },
       { new: true }
     );
-    res.json({
+
+    if(req.body.content){
+      function countWords(str) {
+        return str.trim().split(/\s+/).length;
+      }
+
+      const minute_read = Math.ceil((countWords(content) / 2) / 60);
+      await Post.findByIdAndUpdate(req.params.id,{minute_read:minute_read});
+    }
+
+    
+    const updatePhoto = Post.findById(req.params.id);
+
+    if (updatePhoto.photo) {
+      // console.log(postCreated.ContainImage);
+      updatePhoto.ContainImage = true;
+      await updatePhoto.save();
+    }
+
+    res.status(201).send({
       status: "success",
       data: post,
     });
+
   } catch (error) {
     next(appErr(error.message));
   }
 };
+
 
 const BookmarkPostCtrl = async (req, res, next) => {
   try {
@@ -384,20 +397,20 @@ const BookmarkPostCtrl = async (req, res, next) => {
         (Bookmarked_Post) =>
           Bookmarked_Post.toString() != req.params.id.toString()
       );
-     
+
       await user.save();
-      return(res.status(201).json({
-        status:"success",
-        data:"bookmarked removed"
+      return (res.status(201).json({
+        status: "success",
+        data: "bookmarked removed"
       }));
     } else {
       user.Bookmarked_Post.push(req.params.id);
-   
+
       await user.save();
     }
 
     res.status(200).json({
-      
+
       status: "success",
       data: "successfully bookmarked",
     });

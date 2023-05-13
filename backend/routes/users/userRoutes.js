@@ -2,6 +2,7 @@ const express = require("express");
 const storage = require("../../config/cloudinary")
 const multer=require("multer");
 const {
+  updateProfileCtrl,
   userProfileCtrl,
   usersCtrl,
   deleteUserAccountCtrl,
@@ -14,7 +15,7 @@ const {
   adminUnBlockUsersCtrl,
   updatePasswordCtrl,
   userProfileByUserNameCtrl,
-  BookmarkedPostCtrl,
+  BookmarkedPostCtrl
 } = require("../../controller/user/userCtrl");
 
 
@@ -37,6 +38,7 @@ userRouter.delete("/logOut", logOut);
 
 userRouter.use(protect);
 userRouter.patch("/updatePassword", updatePassword);
+userRouter.put("/updateMyProfile", updateProfileCtrl)
 
 userRouter.get("/",usersCtrl);
 
@@ -57,22 +59,22 @@ userRouter.get("/bookmarkedPost",BookmarkedPostCtrl)
 
 
 //Delete/api/v1/users/delete-account
-userRouter.delete("/delete-account", deleteUserAccountCtrl);
+// userRouter.delete("/delete-account", deleteUserAccountCtrl);
 
 //put/api/v1/users/
-userRouter.put("/",updateUserCtrl);
+// userRouter.put("/",updateUserCtrl);
 
 //put/api/v1/users/update-password
-userRouter.put("/update-password",updatePasswordCtrl);
+// userRouter.put("/update-password",updatePasswordCtrl);
 
-userRouter.post("/profile-photo-upload",upload.single('profile'),profilePhotoUploadCtrl);
+// userRouter.post("/profile-photo-upload",upload.single('profile'),profilePhotoUploadCtrl);
 
-
-//put/api/v1/users/admin-block/:id
-userRouter.put("/admin-unblock/:id",isAdmin,adminUnBlockUsersCtrl);
 
 //put/api/v1/users/admin-block/:id
-userRouter.put("/admin-block/:id",isAdmin,adminBlockUsersCtrl);
+// userRouter.put("/admin-unblock/:id",isAdmin,adminUnBlockUsersCtrl);
+
+//put/api/v1/users/admin-block/:id
+// userRouter.put("/admin-block/:id",isAdmin,adminBlockUsersCtrl);
 
 
 

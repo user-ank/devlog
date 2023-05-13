@@ -7,7 +7,8 @@ const appErr = require("../../utils/appErr");
 const generateToken = require("../../utils/generateToken");
 const getTokenFromHeader = require("../../utils/getTokenFromHeader");
 const { findById } = require("../../model/post/post");
-
+const catchAsync = require("./../../utils/catchAsync");
+const AppError = require("./../../utils/AppError");
 
 const userProfileCtrl = async (req, res, next) => {
   // console.log(req.userAuth);
@@ -270,112 +271,156 @@ const deleteUserAccountCtrl = async (req, res, next) => {
   }
 };
 
-const updateUserCtrl = async (req, res, next) => {
-  const { email, lastName, firstName } = req.body;
+// const updateUserCtrl = async (req, res, next) => {
+//   const { email, lastName, firstName } = req.body;
 
-  try {
-    // checking if email is not taken
+//   try {
+//     // checking if email is not taken
 
-    if (email) {
-      const emailTaken = await User.findOne({ email });
+//     if (email) {
+//       const emailTaken = await User.findOne({ email });
 
-      if (emailTaken) {
-        return next(
-          appErr("email already taken ..so u cant update the email", 400)
-        );
-      }
-    }
+//       if (emailTaken) {
+//         return next(
+//           appErr("email already taken ..so u cant update the email", 400)
+//         );
+//       }
+//     }
 
-    //update the user
+//     //update the user
 
-    const user = await User.findByIdAndUpdate(
-      req.userAuth,
-      {
-        lastName,
-        firstName,
-        email,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+//     const user = await User.findByIdAndUpdate(
+//       req.userAuth,
+//       {
+//         lastName,
+//         firstName,
+//         email,
+//       },
+//       {
+//         new: true,
+//         runValidators: true,
+//       }
+//     );
 
-    res.json({
-      status: "success",
-      data: user,
-    });
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
+//     res.json({
+//       status: "success",
+//       data: user,
+//     });
+//   } catch (error) {
+//     next(appErr(error.message));
+//   }
+// };
 
-const updatePasswordCtrl = async (req, res, next) => {
-  const { password } = req.body;
-  try {
-    if (password) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
+const updateProfileCtrl = catchAsync(async (req, res, next) => {
+  const {
+    name,
+    profilePhoto,
+    Twitter_Profile,
+    GitHub_Profile,
+    StackOverflow_Profile,
+    Instagram_Profile,
+    Facebook_Profile,
+    Website_URL,
+    LinkedIn_URL,
+    YouTube_Channel,
+    Profile_Tagline,
+    Profile_Bio,
+    Tech_Stack,
+    Location,
+    Available_for,
+  } = req.body;
 
-      //update user
+  const updatedProfile = await User.findByIdAndUpdate(
+    req.user,
+    {
+      name: name,
+      profilePhoto: profilePhoto,
+      Twitter_Profile: Twitter_Profile,
+      GitHub_Profile: GitHub_Profile,
+      StackOverflow_Profile: StackOverflow_Profile,
+      Instagram_Profile: Instagram_Profile,
+      Facebook_Profile: Facebook_Profile,
+      Website_URL: Website_URL,
+      LinkedIn_URL: LinkedIn_URL,
+      YouTube_Channel: YouTube_Channel,
+      Profile_Tagline: Profile_Tagline,
+      Profile_Bio: Profile_Bio,
+      Tech_Stack: Tech_Stack,
+      Location: Location,
+      Available_for: Available_for,
+    },
+    { new: true }
+  );
 
-      const user = await User.findByIdAndUpdate(
-        req.userAuth,
-        {
-          password: hashedPassword,
-        },
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
+  res.status(201).send({ updatedProfile });
+});
 
-      res.json({
-        status: "success",
-        data: "password changed succcesfully",
-      });
-    } else {
-      return next(appErr("please provide password field"));
-    }
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
+// const updatePasswordCtrl = async (req, res, next) => {
+//   const { password } = req.body;
+//   try {
+//     if (password) {
+//       const salt = await bcrypt.genSalt(10);
+//       const hashedPassword = await bcrypt.hash(password, salt);
 
-const profilePhotoUploadCtrl = async (req, res, next) => {
-  // console.log(req.file)
-  try {
-    const userToUpdate = await User.findById(req.userAuth);
+//       //update user
 
-    if (!userToUpdate) {
-      return next(appErr("user not found", 403));
-    }
-    if (userToUpdate.isBlocked) {
-      return next(appErr("action not allowed", 403));
-    }
+//       const user = await User.findByIdAndUpdate(
+//         req.userAuth,
+//         {
+//           password: hashedPassword,
+//         },
+//         {
+//           new: true,
+//           runValidators: true,
+//         }
+//       );
 
-    if (req.file) {
-      await User.findByIdAndUpdate(
-        req.userAuth,
-        {
-          $set: {
-            profilePhoto: req.file.path,
-          },
-        },
-        {
-          new: true,
-        }
-      );
+//       res.json({
+//         status: "success",
+//         data: "password changed succcesfully",
+//       });
+//     } else {
+//       return next(appErr("please provide password field"));
+//     }
+//   } catch (error) {
+//     next(appErr(error.message));
+//   }
+// };
 
-      res.json({
-        status: "success",
-        data: "you have successfully uploaded profile photo ",
-      });
-    }
-  } catch (error) {
-    next(appErr(error.message, 500));
-  }
-};
+// const profilePhotoUploadCtrl = async (req, res, next) => {
+//   // console.log(req.file)
+//   try {
+//     const userToUpdate = await User.findById(req.userAuth);
+
+//     if (!userToUpdate) {
+//       return next(appErr("user not found", 403));
+//     }
+//     if (userToUpdate.isBlocked) {
+//       return next(appErr("action not allowed", 403));
+//     }
+
+//     if (req.file) {
+//       await User.findByIdAndUpdate(
+//         req.userAuth,
+//         {
+//           $set: {
+//             profilePhoto: req.file.path,
+//           },
+//         },
+//         {
+//           new: true,
+//         }
+//       );
+
+//       res.json({
+//         status: "success",
+//         data: "you have successfully uploaded profile photo ",
+//       });
+//     }
+//   } catch (error) {
+//     next(appErr(error.message, 500));
+//   }
+// };
 
 const BookmarkedPostCtrl = async (req, res, next) => {
   try {
@@ -393,11 +438,12 @@ const BookmarkedPostCtrl = async (req, res, next) => {
 };
 
 module.exports = {
+  updateProfileCtrl,
   userProfileCtrl,
   usersCtrl,
   deleteUserAccountCtrl,
-  updateUserCtrl,
-  profilePhotoUploadCtrl,
+  // updateUserCtrl,
+  // profilePhotoUploadCtrl,
   whoViewedMyProfileCtrl,
   followingCtrl,
   unFollowCtrl,
@@ -405,7 +451,7 @@ module.exports = {
   unblockUserCtrl,
   adminBlockUsersCtrl,
   adminUnBlockUsersCtrl,
-  updatePasswordCtrl,
+  // updatePasswordCtrl,
   userProfileByUserNameCtrl,
   BookmarkedPostCtrl,
 };

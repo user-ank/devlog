@@ -23,9 +23,13 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: [true, "Content is required"],
   },
+  creationTime: {
+    type: Date,
+  },
+  updateTime:{
+    type: Date
+  },
   report_number: { type: String },
-
-
   is_Bookmared: [
     {
       type: Boolean,
@@ -33,7 +37,6 @@ const postSchema = new mongoose.Schema({
       // ref: "User",
     },
   ],
-
   category: {
     type: String,
     required: [true, "Catagory is required"],
@@ -70,7 +73,7 @@ const postSchema = new mongoose.Schema({
 },
 
   {
-    timestamps: true,
+    // timestamps: true,
     toJSON: { virtuals: true }
   })
 

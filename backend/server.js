@@ -9,6 +9,9 @@ const cookieParser = require('cookie-parser');
 const credentials = require('./middlewares/credentials');
 const app = express();
 const globalErrHandler = require("./middlewares/globalErrHandler");
+const bodyParser = require('body-parser')
+
+
 const port = process.env.PORT || 8000;
 
 app.use(credentials);
@@ -17,6 +20,8 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 //middleware
 
+
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); //pass incoming payload
 
 const userRouter = require("./routes/users/userRoutes");

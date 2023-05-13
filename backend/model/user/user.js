@@ -16,8 +16,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "userName is required"],
     },
-    profilePhoto: {
+    profilePhoto: { 
       type: String,
+      default: "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
     },
     email: {
       type: String,
@@ -27,6 +28,48 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
       select: false
+    },
+    Twitter_Profile: {
+      type: String,
+    },
+    GitHub_Profile:{
+      type: String,
+    },
+    StackOverflow_Profile:{
+      type: String,
+    },
+    Instagram_Profile:{
+      type: String,
+    },
+    Facebook_Profile:{
+      type: String,
+    },
+    Website_URL:{
+      type: String,
+    },
+    LinkedIn_URL:{
+      type: String,
+    },
+    YouTube_Channel:{
+      type: String,
+    },
+    Profile_Tagline:{
+      type: String,
+    },
+    Profile_Bio:{
+      type: String,
+      max: 250
+    },
+    Tech_Stack:{
+      type: String,
+      max: 100
+    },
+    Location:{
+      type: String,
+    },
+    Available_for:{
+      type: String,
+      max: 250
     },
     followers: [
       {
