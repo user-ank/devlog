@@ -13,7 +13,7 @@ function Profile_home_post(prop) {
       <div className="ph-posts-contents">
         <h1 className='ph-posts-title'>{post?.title}</h1>
         <div className="ph-posts-time">
-          <div className="ph-posts-date">{post?.createdAt.substring(0,10)}</div>
+          <div className="ph-posts-date">{post?.createdAt?.substring(0,10)}</div>
           <div className="ph-posts-time-to-read"> <MenuBookIcon /> </div>
           <div className="ph-posts-time-to-read">{post?.minute_read} minute read</div>
         </div>
