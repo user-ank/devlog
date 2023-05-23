@@ -8,7 +8,6 @@ const generateToken = require("../../utils/generateToken");
 const getTokenFromHeader = require("../../utils/getTokenFromHeader");
 const { findById } = require("../../model/post/post");
 
-
 const userProfileCtrl = async (req, res, next) => {
   // console.log(req.userAuth);
 
@@ -377,15 +376,36 @@ const profilePhotoUploadCtrl = async (req, res, next) => {
   }
 };
 
+// isme sirf abhi summary bhejna hai ..ye kaam krna hai ankit tee ko
 const BookmarkedPostCtrl = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userAuth).populate("Bookmarked_Post");
+    const user = await User.findById(req.user).populate("Bookmarked_Post");
 
     const B_POST = user.Bookmarked_Post;
 
+    let doc = [];
+    B_POST.map((obj) => {
+      doc.push({
+        title: obj.title,
+        id: obj._id,
+        likeCnt: obj.likes.length,
+        content: obj.summary,
+        minRead: obj.minute_read,
+        photo: obj.photo,
+        user: {
+          userName: obj.user.userName,
+          name: obj.user.name,
+          userId: obj.user._id,
+          profilePhoto: obj.user.profilePhoto,
+        },
+        updatedAt: obj.updatedAt,
+        ContainImage: obj.ContainImage,
+      });
+    });
+
     res.json({
       status: "success",
-      data: B_POST,
+      data: doc,
     });
   } catch (error) {
     next(appErr(error.message));
