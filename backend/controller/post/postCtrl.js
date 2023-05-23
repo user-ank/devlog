@@ -82,7 +82,8 @@ const fetchPostCtrl = async (req, res, next) => {
             profilePhoto: obj.user.profilePhoto
           },
           updatedAt: obj.updatedAt,
-          ContainImage: obj.ContainImage
+          ContainImage: obj.ContainImage,
+          creationTime:obj.creationTime
         }
       )
     })
@@ -164,7 +165,8 @@ const AuthecticatefetchPostCtrl = async (req, res, next) => {
             profilePhoto: obj.user.profilePhoto
           },
           updatedAt: obj.updatedAt,
-          ContainImage: obj.ContainImage
+          ContainImage: obj.ContainImage,
+          creationTime:obj.creationTime
         }
       )
     })
@@ -180,6 +182,61 @@ const AuthecticatefetchPostCtrl = async (req, res, next) => {
     next(appErr(error.message));
   }
 };
+
+
+
+const SearchPosts = catchAsync(async (req, res, next) => {
+
+  // const searchTerm = req.body.text;
+  // const regexTerm = new RegExp(searchTerm, 'i');
+  // const results = await Post.find({
+  //   $or: [
+  //     { title: { $regex: regexTerm } },
+  //     { subtitle: { $regex: regexTerm } },
+  //     { summary: { $regex: regexTerm } },
+  //   ]
+  // })
+
+  // res.send(results);
+
+
+  let results;
+  console.log(req.query.text);
+
+  if (req.query.text) {
+    // if (req.query.text.includes(",") || req.query.text.includes(" ")) {
+    results = await
+      Post.aggregate([
+        {
+          $search: {
+            index: "autocomplete",
+            autocomplete: {
+              query: req.query.text,
+              path: "title",
+              fuzzy: {
+                maxEdits: 1,
+              },
+              tokenOrder: "sequential",
+            },
+          },
+        },
+        {
+          $project: {
+            // searchName: 1,
+            _id: 1,
+            title: 1,
+            subtitle: 1,
+            summary: 1,
+            minute_read: 1,
+            content: 1,
+            score: { $meta: "searchScore" },
+          },
+        }
+      ])
+  }
+  res.send(results);
+})
+
 
 const likeCtrl = catchAsync(async (req, res, next) => {
   const currentUser = await User.findById(req.user);
@@ -353,16 +410,16 @@ const updatePostCtrl = async (req, res, next) => {
       { new: true }
     );
 
-    if(req.body.content){
+    if (req.body.content) {
       function countWords(str) {
         return str.trim().split(/\s+/).length;
       }
 
       const minute_read = Math.ceil((countWords(content) / 2) / 60);
-      await Post.findByIdAndUpdate(req.params.id,{minute_read:minute_read});
+      await Post.findByIdAndUpdate(req.params.id, { minute_read: minute_read });
     }
 
-    
+
     const updatePhoto = Post.findById(req.params.id);
 
     if (updatePhoto.photo) {
@@ -420,6 +477,7 @@ const BookmarkPostCtrl = async (req, res, next) => {
 };
 
 module.exports = {
+  SearchPosts,
   createPostCtrl,
   likeCtrl,
   deletePostCtrl,

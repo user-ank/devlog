@@ -19,16 +19,19 @@ const {
 } = require("../../controller/user/userCtrl");
 
 
-const isAdmin=require("../../middlewares/isAdmin");
+// const isAdmin=require("../../middlewares/isAdmin");
 
-const {signup,login,protect,forgetPassword,resetPassword,updatePassword,checkPassAndUserID,renewAccessToken,logOut} = require("../../controller/authController");
+const {userValidator,validate} = require('./../../middlewares/validator');
+
+const {signup,login,protect,forgetPassword,resetPassword,updatePassword,checkPassAndUserID,renewAccessToken,logOut,verifyEmail} = require("../../controller/authController");
 
 const userRouter = express.Router();
 
 const upload=multer({storage});
 
 
-userRouter.post("/signup", signup);
+userRouter.post("/signup",userValidator,validate,signup);
+userRouter.post('/verifyEmail',verifyEmail);
 userRouter.post("/login", login);
 userRouter.post("/forget", forgetPassword);
 userRouter.patch("/reset/:token", resetPassword);
@@ -51,6 +54,10 @@ userRouter.get("/following/:id",followingCtrl);
 userRouter.get("/unfollowing/:id",unFollowCtrl);
 
 userRouter.get("/bookmarkedPost",BookmarkedPostCtrl)
+
+
+
+
 //GET/api/v1/users/blocked/:id
 // userRouter.get("/block/:id",blockUsersCtrl);
 

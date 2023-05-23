@@ -121,8 +121,11 @@ const userSchema = new mongoose.Schema(
       default: true,
       select: false
     },
-
-
+    isVerified:{
+      type: Boolean,
+      required: true,
+      default: false
+    },
     Bookmarked_Post: [
     {
       type: mongoose.Schema.Types.ObjectId,

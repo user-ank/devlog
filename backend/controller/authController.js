@@ -4,11 +4,13 @@ const { promisify } = require('util');
 const crypto = require('crypto');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/AppError');
-const sendEmail = require('./../utils/email');
+// const sendEmail = require('./../utils/email');
 const { LOADIPHLPAPI } = require('dns');
 const UserToken = require('./../model/user/userToken');
 const verifyRefreshToken = ('./../utils/varifyRefreshToken');
-
+const EmailVerificationToken = require('./../model/user/EmailVarificationToken');
+const { genarateOTP, sendEmail } = require("./../utils/email");
+const { isValidObjectId } = require("mongoose");
 
 const signToken = (id, secret, expireTime) => {
     return jwt.sign({ id }, secret, {
@@ -16,7 +18,7 @@ const signToken = (id, secret, expireTime) => {
     });
 }
 
-const createSendToken = async (user, statusCode, res) => {
+const createSendToken = async (user, msg,statusCode, res) => {
     const accessToken = signToken(user._id, process.env.JWT_ACCESS_SECRET, process.env.JWT_ACCESS_EXPIRES_IN);
     const refreshToken = signToken(user._id, process.env.JWT_RFRESH_SECRET, process.env.JWT_REFRESH_EXPIRES_IN);
 
@@ -32,16 +34,17 @@ const createSendToken = async (user, statusCode, res) => {
     }
 
     // if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-    
+
     // res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
     user.password = undefined;
-    
+
     res.cookie('jwt', refreshToken, cookieOptions);
     // res.cookie('hello', 'fuckall');
     res.status(statusCode).json({
         status: 'success',
         accessToken,
         refreshToken,
+        message: msg,
         data: {
             profilePhoto: user.profilePhoto
         }
@@ -109,7 +112,7 @@ exports.logOut = catchAsync(async (req, res, next) => {
 
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
 
-	res.status(200).json({ error: false, message: "Logged Out Sucessfully" });
+    res.status(200).json({ error: false, message: "Logged Out Sucessfully" });
 
 })
 
@@ -160,8 +163,26 @@ exports.signup = catchAsync(async (req, res, next) => {
     }
 
     if (resObj.usernameAva && resObj.emailAva) {
-        const newUser = await User.create(req.body);
-        createSendToken(newUser, 201, res);
+
+        const { name, email, password, userName } = req.body;
+        const newUser = await User.create({ name: name, email: email, password: password, userName: userName });
+        // const newUser = await User.create(req.body);
+        const OTP = genarateOTP();
+        await EmailVerificationToken.create({ owner: newUser._id, token: OTP });
+        
+        const options = {
+            OTP: OTP,
+            email: newUser.email,
+            subject: "Email Verification",
+            message: `<p>Your Verification OTP</p>
+            <h1>${OTP}</h1>`,
+        };
+
+        const msg = "Please verify your email. OTP has been sent to your email !"
+        await sendEmail(options);
+        res.status(200).send({msg:msg});
+        // createSendToken(newUser,msg, 201, res);
+          
     }
     else {
         res.status(200).json({
@@ -170,6 +191,57 @@ exports.signup = catchAsync(async (req, res, next) => {
     }
 
 })
+
+
+
+exports.verifyEmail = async (req, res) => {
+    const { userId, OTP } = req.body;
+  
+    if (!isValidObjectId(userId))
+      return res.status(404).send({ error: "Invalid user!" });
+  
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).send({ error: "user not found!" });
+  
+    if (user.isVerified)
+      return res.status(200).send({ error: "user is already verified!" });
+  
+    const token = await EmailVerificationToken.findOne({ owner: userId });
+    if (!token) {
+
+        // ! Testing Phase
+        // await User.findByIdAndDelete(userId);
+        return res.status(404).send({ error: "token not found!" });
+    }
+  
+    const isMatched = await token.compareToken(OTP);
+    if (!isMatched)
+      return res.status(400).send({ error: "Please submit a valid OTP!" });
+  
+    user.isVerified = true;
+    await user.save();
+    await EmailVerificationToken.findByIdAndDelete(token._id);
+    
+    const options = {
+        OTP: OTP,
+        email: user.email,
+        subject: "Welcome !! 🙂🙂🙂🙂",
+        message: "<h1>Thanks For Visiting.😊😊😊 <h1> ",
+    };
+    
+    const msg = "Welcome to DevLog !!Your email is verified!! 🙂🙂"
+
+    newUser = {
+        _id:userId,
+    }
+
+    createSendToken(newUser,msg, 201, res);
+    //Send Welcome email
+    await sendEmail(options);
+  
+    // res.status(200).send({ message: "Your email is verified !! 🙂🙂🙂" });
+};
+
 
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -182,7 +254,9 @@ exports.login = catchAsync(async (req, res, next) => {
     if (!user || !await user.correctPassword(password, user.password)) {
         return next(new AppError('Incorrect Email or Password 😔😔😔😔 !!', 401));
     }
-    createSendToken(user, 200, res);
+
+    const msg = "Login successfull !! 🙂🙂"
+    createSendToken(user, msg,200, res);
 });
 
 

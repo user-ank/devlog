@@ -6,6 +6,7 @@ const storage = require("../../config/cloudinary");
 const multer = require("multer");
 
 const {
+  SearchPosts,
   createPostCtrl,
   deletePostCtrl,
   updatePostCtrl,
@@ -25,6 +26,8 @@ const {protect} = require('./../../controller/authController');
 // const isLogin = require("../../middlewares/isLogin");
 postRouter.get("/",fetchPostCtrl);
 postRouter.get("/user/:id",userPostsCtrl);   // soln => change get to post method
+postRouter.post("/search",SearchPosts);
+
 
 postRouter.use(protect);
 postRouter.get("/authenticateUser",AuthecticatefetchPostCtrl);
