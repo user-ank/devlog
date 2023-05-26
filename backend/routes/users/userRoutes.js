@@ -5,15 +5,11 @@ const {
   updateProfileCtrl,
   userProfileCtrl,
   usersCtrl,
-  deleteUserAccountCtrl,
-  updateUserCtrl,
-  profilePhotoUploadCtrl, 
+  deleteUserAccountCtrl, 
   whoViewedMyProfileCtrl,
-  followingCtrl,
-  unFollowCtrl,
+  FollowCtrl,
   adminBlockUsersCtrl,
   adminUnBlockUsersCtrl,
-  updatePasswordCtrl,
   userProfileByUserNameCtrl,
   BookmarkedPostCtrl
 } = require("../../controller/user/userCtrl");
@@ -40,6 +36,7 @@ userRouter.get("/renewAccessToken",renewAccessToken)
 userRouter.delete("/logOut", logOut);
 
 userRouter.use(protect);
+
 userRouter.patch("/updatePassword", updatePassword);
 userRouter.put("/updateMyProfile", updateProfileCtrl)
 
@@ -50,9 +47,7 @@ userRouter.get("/profileByName/:id",userProfileByUserNameCtrl);
 userRouter.get("/profile-viewers/:id",whoViewedMyProfileCtrl);
 
 //GET/api/v1/users/following/:id
-userRouter.get("/following/:id",followingCtrl);
-userRouter.get("/unfollowing/:id",unFollowCtrl);
-
+userRouter.post("/following/:id",FollowCtrl);
 userRouter.get("/bookmarkedPost",BookmarkedPostCtrl)
 
 
@@ -71,8 +66,6 @@ userRouter.get("/bookmarkedPost",BookmarkedPostCtrl)
 //put/api/v1/users/
 // userRouter.put("/",updateUserCtrl);
 
-//put/api/v1/users/update-password
-// userRouter.put("/update-password",updatePasswordCtrl);
 
 // userRouter.post("/profile-photo-upload",upload.single('profile'),profilePhotoUploadCtrl);
 

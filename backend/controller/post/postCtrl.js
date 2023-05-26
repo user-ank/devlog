@@ -5,12 +5,27 @@ const appErr = require("../../utils/appErr");
 const APIFeatures = require('./../../utils/API Features');
 const catchAsync = require('./../../utils/catchAsync');
 
+function createStringWithFixedWords(content, numWords) {
+  // Split the content into an array of words
+  const words = content.split(' ');
+
+  // Extract the desired number of words
+  const selectedWords = words.slice(0, numWords);
+
+  // Join the extracted words back into a string
+  const result = selectedWords.join(' ');
+
+  return result;
+}
+
 const createPostCtrl = catchAsync(async (req, res, next) => {
   const { title, subtitle, category, content, ContainImage } = req.body;
   const author = await User.findById(req.user);
   // console.log(req.user);
 
-  const summary = content.substring(0, 200);
+  // const summary = content.substring(0, 200);
+  let summary = createStringWithFixedWords(content,50);
+  summary += '....'; 
 
   const creationTime = Date.now()
 
@@ -311,33 +326,6 @@ const userPostsCtrl = async (req, res, next) => {
 };
 
 
-const toggleDisLikesPostCtrl = async (req, res, next) => {
-  try {
-    const post = await Post.findById(req.params.id);
-
-    //check kr rhe hai ki kahin agar user pehle se ye post like kr chuka hoga to...
-    const isUnLiked = post.disLikes.includes(req.userAuth);
-
-    if (isUnLiked) {
-      post.disLikes = post.disLikes.filter(
-        (disLikes) => disLikes.toString() != req.userAuth.toString()
-      );
-      await post.save();
-    } else {
-      //agar user like nhi kiya hai ye vala post pehle tb.......
-      post.disLikes.push(req.userAuth);
-      await post.save();
-    }
-
-    res.json({
-      status: "success",
-      data: post,
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-};
-
 // for viewing single post
 const postDetailsCtrl = async (req, res) => {
   try {
@@ -485,7 +473,6 @@ module.exports = {
   AuthecticatefetchPostCtrl,
   fetchPostCtrl,
   // bookmarksCtrl,
-  toggleDisLikesPostCtrl,
   postDetailsCtrl,
   userPostsCtrl,
   BookmarkPostCtrl,

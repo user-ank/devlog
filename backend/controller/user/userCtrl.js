@@ -76,69 +76,36 @@ const whoViewedMyProfileCtrl = async (req, res, next) => {
   }
 };
 
-const followingCtrl = async (req, res, next) => {
-  try {
-    const userToFollow = await User.findById(req.params.id);
-    const userWhoFollowed = await User.findById(req.userAuth);
+const FollowCtrl = catchAsync(async (req, res) => {
+  const userToFollow = await User.findById(req.params.id);
+  const userWhoFollowed = await User.findById(req.user);
 
-    if (userWhoFollowed && userToFollow) {
-      const isUserAlreadyFollowed = userToFollow.followers.find(
-        (follower) => follower.toString() === userWhoFollowed._id.toString()
-      );
-      if (isUserAlreadyFollowed) {
-        return next(appErr("you already follow this user"));
-      } else {
-        userToFollow.followers.push(userWhoFollowed._id);
-        userWhoFollowed.following.push(userToFollow._id);
+  if (!userWhoFollowed.following.includes(req.params.id)) {
+    userWhoFollowed.following.push(req.params.id);
+    userToFollow.followers.push(req.user);
+    await userWhoFollowed.save();
+    await userToFollow.save();
 
-        await userWhoFollowed.save();
-        await userToFollow.save();
+    res.status(200).send({
+      message: "Follow Successfull.🙂🙂",
+    });
+  } else {
+    userWhoFollowed.following = userWhoFollowed.following.filter(
+      (item) => item.toString() !== userToFollow._id.toString()
+    );
+    userToFollow.followers = userToFollow.followers.filter(
+      (item) => item.toString() !== userWhoFollowed._id.toString()
+    );
+    await userWhoFollowed.save();
+    await userToFollow.save();
 
-        res.json({
-          status: "success",
-          data: "you have succesfully followed this user",
-        });
-      }
-    }
-  } catch (error) {
-    next(appErr(error.message));
+    res.status(200).send({
+      message: "Successfully Unfollow !!",
+    });
   }
-};
+});
 
-const unFollowCtrl = async (req, res, next) => {
-  try {
-    const userToBeUnFollowed = await User.findById(req.params.id);
-    const userWhoUnFollowed = await User.findById(req.userAuth);
 
-    if (userToBeUnFollowed && userWhoUnFollowed) {
-      const isUserAlreadyFollowed = userToBeUnFollowed.followers.find(
-        (follower) => follower.toString() === userWhoUnFollowed._id.toString()
-      );
-
-      if (!isUserAlreadyFollowed) {
-        return next(appErr("you have not followed this user"));
-      } else {
-        userToBeUnFollowed.followers = userToBeUnFollowed.followers.filter(
-          (follower) => follower.toString() !== userWhoUnFollowed._id.toString()
-        );
-
-        await userToBeUnFollowed.save();
-
-        userWhoUnFollowed.following = userWhoUnFollowed.following.filter(
-          (following) =>
-            following.toString() !== userToBeUnFollowed._id.toString()
-        );
-        await userWhoUnFollowed.save();
-        res.json({
-          status: "success",
-          data: "you have successfully unfollow this user",
-        });
-      }
-    }
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
 
 //block
 const blockUsersCtrl = async (req, res, next) => {
@@ -271,45 +238,7 @@ const deleteUserAccountCtrl = async (req, res, next) => {
   }
 };
 
-// const updateUserCtrl = async (req, res, next) => {
-//   const { email, lastName, firstName } = req.body;
 
-//   try {
-//     // checking if email is not taken
-
-//     if (email) {
-//       const emailTaken = await User.findOne({ email });
-
-//       if (emailTaken) {
-//         return next(
-//           appErr("email already taken ..so u cant update the email", 400)
-//         );
-//       }
-//     }
-
-//     //update the user
-
-//     const user = await User.findByIdAndUpdate(
-//       req.userAuth,
-//       {
-//         lastName,
-//         firstName,
-//         email,
-//       },
-//       {
-//         new: true,
-//         runValidators: true,
-//       }
-//     );
-
-//     res.json({
-//       status: "success",
-//       data: user,
-//     });
-//   } catch (error) {
-//     next(appErr(error.message));
-//   }
-// };
 
 const updateProfileCtrl = catchAsync(async (req, res, next) => {
   const {
@@ -354,38 +283,6 @@ const updateProfileCtrl = catchAsync(async (req, res, next) => {
 
   res.status(201).send({ updatedProfile });
 });
-
-// const updatePasswordCtrl = async (req, res, next) => {
-//   const { password } = req.body;
-//   try {
-//     if (password) {
-//       const salt = await bcrypt.genSalt(10);
-//       const hashedPassword = await bcrypt.hash(password, salt);
-
-//       //update user
-
-//       const user = await User.findByIdAndUpdate(
-//         req.userAuth,
-//         {
-//           password: hashedPassword,
-//         },
-//         {
-//           new: true,
-//           runValidators: true,
-//         }
-//       );
-
-//       res.json({
-//         status: "success",
-//         data: "password changed succcesfully",
-//       });
-//     } else {
-//       return next(appErr("please provide password field"));
-//     }
-//   } catch (error) {
-//     next(appErr(error.message));
-//   }
-// };
 
 // const profilePhotoUploadCtrl = async (req, res, next) => {
 //   // console.log(req.file)
@@ -442,16 +339,12 @@ module.exports = {
   userProfileCtrl,
   usersCtrl,
   deleteUserAccountCtrl,
-  // updateUserCtrl,
-  // profilePhotoUploadCtrl,
   whoViewedMyProfileCtrl,
-  followingCtrl,
-  unFollowCtrl,
+  FollowCtrl,
   blockUsersCtrl,
   unblockUserCtrl,
   adminBlockUsersCtrl,
   adminUnBlockUsersCtrl,
-  // updatePasswordCtrl,
   userProfileByUserNameCtrl,
   BookmarkedPostCtrl,
 };
