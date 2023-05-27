@@ -8,7 +8,7 @@ import LoginModal from '../Authentication/LoginModal';
 
 function BlogHome(prop) {
 	let { blog } = prop;
-	const PrivateAPI = useAxiosPrivate();				// it sends our access token with the request
+	const PrivateAPI = useAxiosPrivate();	   // This instance is used to get data for private routes; it send the access token to server. 
 	
 	const [loginModal, setModal] = useState(false); 	// pops the modal to make users login
 	const [is_bookmarked, setBookmark] = useState(blog.isBookmarked ? true : false);	// to show if post is already bookmarked or not
