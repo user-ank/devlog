@@ -36,6 +36,23 @@ export const wentWrongMsg = () => {
     }, 3000);
 }
 
+export const startLoader = () => {
+    let loader = document.getElementById('loader');
+    loader.style.visibility = "visible";
+    loader.classList.add("eighty");
+}
+
+export const finishLoader = () => {
+    let loader = document.getElementById('loader');
+    loader.classList.add("hundred");
+
+    setTimeout(() => {
+      loader.style.visibility = "hidden";
+      loader.classList.remove("eighty", "hundred");
+    }, 1000)
+
+}
+
 function Header() {
 
     const auth = useAuth();
@@ -76,17 +93,7 @@ function Header() {
     const closeModal = () => {
         setIsModalOpen(false);
     };
-    const handleOutsideClick = useCallback(
-        e => {
-            // if (!isNil(modal)) {
-            //     if (!modal.current.contains(e.target)) {
-            //         closeModal();
-            //         document.removeEventListener("click", handleOutsideClick, false);
-            //     }
-            // }
-        },
-        [closeModal]
-    );
+
     return (
         <div>
             <header>
@@ -101,7 +108,7 @@ function Header() {
                     <div id="loginImgDiv">
                         {/* <Link to="/devlog/profile"> */}
                         <img id="loginImg" onClick={openModal} src={(auth?.user?.profilePhoto)} />
-                        {/* </Link> */}
+                       
                         {isModalOpen && (
                             <Modal
                                 open={isModalOpen}
@@ -110,21 +117,12 @@ function Header() {
                                 closeOnEsc
                                 showCloseIcon={false}
                                 focusTrapped={false}
-                                // center
                                 closeOnOverlayClick={true}
-                                // styles={{
-                                //     overlay: {
-                                //         height: "auto",
-                                //         // backgroundColor : "none"
-                                //     },
-                                    
-                                // }}
                                 classNames={{
                                     overlay: 'customOverlay',
                                     modal: 'qheader-modal',
                                   }}
                             >
-                                {/* setIsModalOpen(prev => !prev) */}
                                 
                                 <div >
                                     <div className="modal__info">
@@ -136,7 +134,7 @@ function Header() {
                                     </div>
                                     <div className="horizontal-line"></div>
                                     <div className="modal__Field__option">
-                                        <Link to="/devlog/username/bookmarks">
+                                        <Link to="/devlog/bookmarks">
                                             <div className='bookmarks options'>
                                                 <div className="material-icons"><BookmarkIcon /></div>
                                                  My Bookmarks
