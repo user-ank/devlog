@@ -380,28 +380,30 @@ const profilePhotoUploadCtrl = async (req, res, next) => {
 const BookmarkedPostCtrl = async (req, res, next) => {
   try {
     const user = await User.findById(req.user).populate("Bookmarked_Post");
-
-    const B_POST = user.Bookmarked_Post;
-
     let doc = [];
-    B_POST.map((obj) => {
-      doc.push({
-        title: obj.title,
-        id: obj._id,
-        likeCnt: obj.likes.length,
-        content: obj.summary,
-        minRead: obj.minute_read,
-        photo: obj.photo,
-        user: {
-          userName: obj.user.userName,
-          name: obj.user.name,
-          userId: obj.user._id,
-          profilePhoto: obj.user.profilePhoto,
-        },
-        updatedAt: obj.updatedAt,
-        ContainImage: obj.ContainImage,
-      });
-    });
+    
+    await Promise.all(user.Bookmarked_Post.map(async (obj) => {
+      // console.log("hiiiiiii");
+      const usr = await User.findById(obj.user);
+      if (usr) {
+        doc.push({
+          title: obj.title,
+          id: obj._id,
+          likeCnt: obj.likes.length,
+          content: obj.summary,
+          minRead: obj.minute_read,
+          photo: obj.photo,
+          user: {
+            userName: usr.userName,
+            name: usr.name,
+            userId: usr._id,
+            profilePhoto: usr.profilePhoto,
+          },
+          updatedAt: obj.updatedAt,
+          ContainImage: obj.ContainImage,
+        });
+      }
+    }));
 
     res.json({
       status: "success",
