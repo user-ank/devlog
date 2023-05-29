@@ -15,6 +15,7 @@ import Profile from './components/pages/Profile';
 import BlogPage from './components/pages/BlogPage';
 import User from './components/pages/UserPage/User';
 import Signup from './components/pages/Authentication/Signup';
+import Bookmark from './components/pages/BookmarkPage/Bookmark';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             <Route path='/devlog/groups' element={<RequireAuth><Groups/></RequireAuth>}/>
             <Route path='/devlog/notifications' element={<RequireAuth><Notifications/></RequireAuth>}/>
             <Route path='/devlog/profile' element={<RequireAuth><Profile/></RequireAuth>}/>
+            <Route path='/devlog/bookmarks' element={<RequireAuth><Bookmark/></RequireAuth>}/>
             <Route path='/devlog/:username/' element={<User/>} />
           </Route>
           <Route path='/devlog/:username/:blogTitle' element={<BlogPage/>}/>
