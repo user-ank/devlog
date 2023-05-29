@@ -12,7 +12,7 @@ function BlogHome(prop) {
 	
 	const [loginModal, setModal] = useState(false); 	// pops the modal to make users login
 	const [is_bookmarked, setBookmark] = useState(blog.isBookmarked ? true : false);	// to show if post is already bookmarked or not
-	const [is_liked, setLike] = useState(blog.isLike ? true : false);					// to show if post is already liked or not
+	const [is_liked, setLike] = useState(blog.isLiked ? true : false);					// to show if post is already liked or not
 	const [likeCnt, changeLike] = useState(blog.likeCnt);
 
 	const bookmarkMsgRef = useRef();
