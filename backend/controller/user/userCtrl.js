@@ -380,11 +380,31 @@ const profilePhotoUploadCtrl = async (req, res, next) => {
 const BookmarkedPostCtrl = async (req, res, next) => {
   try {
     const user = await User.findById(req.user).populate("Bookmarked_Post");
+
+
+    const B_POST = user.Bookmarked_Post;
+
+
+
+
     let doc = [];
-    
+
     await Promise.all(user.Bookmarked_Post.map(async (obj) => {
-      // console.log("hiiiiiii");
+
       const usr = await User.findById(obj.user);
+      
+
+      let likeed = false;
+      for (let index = 0; index < obj.likes.length; index++) {
+        if (obj.likes[index] == user.id) {
+          likeed = true;
+          break;
+        }
+
+      }
+
+
+
       if (usr) {
         doc.push({
           title: obj.title,
@@ -393,6 +413,8 @@ const BookmarkedPostCtrl = async (req, res, next) => {
           content: obj.summary,
           minRead: obj.minute_read,
           photo: obj.photo,
+          isBookmarked: true,
+          isLiked: likeed,
           user: {
             userName: usr.userName,
             name: usr.name,
@@ -404,6 +426,8 @@ const BookmarkedPostCtrl = async (req, res, next) => {
         });
       }
     }));
+
+
 
     res.json({
       status: "success",
