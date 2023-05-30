@@ -1,5 +1,5 @@
 import Navbar from './Navbar';
-import { useState,useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Searchbar from './Searchbar';
 import { logout } from '../../api';
 import { useAuth } from '../../context/auth'
@@ -47,8 +47,8 @@ export const finishLoader = () => {
     loader.classList.add("hundred");
 
     setTimeout(() => {
-      loader.style.visibility = "hidden";
-      loader.classList.remove("eighty", "hundred");
+        loader.style.visibility = "hidden";
+        loader.classList.remove("eighty", "hundred");
     }, 1000)
 
 }
@@ -108,7 +108,7 @@ function Header() {
                     <div id="loginImgDiv">
                         {/* <Link to="/devlog/profile"> */}
                         <img id="loginImg" onClick={openModal} src={(auth?.user?.profilePhoto)} />
-                       
+
                         {isModalOpen && (
                             <Modal
                                 open={isModalOpen}
@@ -121,9 +121,9 @@ function Header() {
                                 classNames={{
                                     overlay: 'customOverlay',
                                     modal: 'qheader-modal',
-                                  }}
+                                }}
                             >
-                                
+
                                 <div >
                                     <div className="modal__info">
                                         <Avatar src={(auth?.user?.profilePhoto)} className='avatar' />
@@ -135,20 +135,20 @@ function Header() {
                                     <div className="horizontal-line"></div>
                                     <div className="modal__Field__option">
                                         <Link to="/devlog/bookmarks">
-                                            <div className='bookmarks options'>
+                                            <div className='bookmarks options' onClick={closeModal}>
                                                 <div className="material-icons"><BookmarkIcon /></div>
-                                                 My Bookmarks
+                                                My Bookmarks
                                             </div>
                                         </Link>
                                         <Link to="/devlog/username/accountsetting">
-                                            <div className='account_setting options'>
+                                            <div className='account_setting options' onClick={closeModal}>
                                                 <div className="material-icons"><ManageAccountsIcon /></div>
                                                 Account Settings
                                             </div>
                                         </Link>
                                     </div>
                                 </div>
-                                
+
                             </Modal>
                         )}
 
