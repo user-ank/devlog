@@ -159,7 +159,7 @@ const AuthecticatefetchPostCtrl = async (req, res, next) => {
         {
           title: obj.title,
           id: obj._id,
-          isLike: obj.isLike,
+          isLiked: obj.isLike,
           isBookmarked: obj.isBookmarked,
           likeCnt: obj.likes.length,
           content: obj.summary,
