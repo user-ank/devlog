@@ -14,9 +14,9 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 // Will contain header components like search-bar nav-bar login-icon 
 
-export const showSuccessMsg = () => {
 
-    // This element is in Header.js component, tell if login successful or not;
+// This element is in Header.js component, tell if login successful or not;
+export const showSuccessMsg = () => {
     let element = document.getElementById("logInSuccess");
     element.style.opacity = 1;
     element.style.visibility = "visible";
@@ -26,6 +26,7 @@ export const showSuccessMsg = () => {
     }, 3000);
 }
 
+// This element is in Header.js component, tell if something went wrong or not;
 export const wentWrongMsg = () => {
     let element = document.getElementById("wentWrong");
     element.style.opacity = 1;
@@ -86,7 +87,6 @@ function Header() {
     }
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    // const Close = <CancelIcon />
     const openModal = () => {
         setIsModalOpen(true);
     };
@@ -140,8 +140,9 @@ function Header() {
                                                 My Bookmarks
                                             </div>
                                         </Link>
-                                        <Link to="/devlog/username/accountsetting">
-                                            <div className='account_setting options' onClick={closeModal}>
+                                        <Link to="/devlog/username/accountsetting" onClick={closeModal}>
+                                            <div className='account_setting options'>
+
                                                 <div className="material-icons"><ManageAccountsIcon /></div>
                                                 Account Settings
                                             </div>

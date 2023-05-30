@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
-import { useAuth } from "../../../context/auth";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import LeftSide from "../HomePage/LeftSide";
 import '../HomePage/BlogListHome.css'
+import "./Bookmark.css";
 import BlogListHome from "../HomePage/BlogListHome";
 import { startLoader, finishLoader } from "../../Header/Header";
 
@@ -21,16 +21,23 @@ function Bookmark() {
         console.log(res);
     };
     
+    const stylingNavbar = () => {
+        let list = document.getElementsByClassName("navImg");
+        for (let element of list) {
+            element.classList.remove("navActive");
+        }
+    };
 
     useEffect(()=>{
+        stylingNavbar();
         getBookmarks();
     },[]);
 
 
     return (
-        <div>
+        <div id="bookmark">
               <LeftSide/>
-              <BlogListHome blogs={blogArray}/> {/*  Reusing the component; There is no need to use all the features of this component here 
+              <BlogListHome header="Bookmarks page" blogs={blogArray}/> {/*  Reusing the component; There is no need to use all the features of this component here 
                                     but better writing the entire component*/}
               
         </div>

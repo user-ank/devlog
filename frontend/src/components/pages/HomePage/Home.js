@@ -89,7 +89,7 @@ function Home() {
     return (
         <div id="home" >
             <LeftSide/>
-            <BlogListHome blogs={blogArray} />
+            <BlogListHome header="Home Page" blogs={blogArray} />
 
         </div>
     );
