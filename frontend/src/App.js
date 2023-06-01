@@ -16,6 +16,7 @@ import BlogPage from './components/pages/BlogPage';
 import User from './components/pages/UserPage/User';
 import Signup from './components/pages/Authentication/Signup';
 import Bookmark from './components/pages/BookmarkPage/Bookmark';
+import Account from './components/pages/AccountSetting/Account';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             <Route path='/devlog/:username/' element={<User/>} />
           </Route>
           <Route path='/devlog/:username/:blogTitle' element={<BlogPage/>}/>
+          <Route path='/devlog/:username/accountsetting' element={<Account/>}/>
 
           <Route path='*' element={<NotFound/>}/>
         </Routes>
