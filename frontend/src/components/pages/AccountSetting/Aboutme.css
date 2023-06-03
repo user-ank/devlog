@@ -1,0 +1,49 @@
+.user-aboutme {
+    font-family: 'Poppins';
+    padding-top: 1.75rem;
+    padding-bottom: 1.75rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.aboutme {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-aboutme-text {
+    font-family: 'Poppins';
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.aboutme-account-aboutmebtn {
+    border-radius: 90px;
+    border: 1px solid rgb(150, 150, 150);
+    height: 44px;
+    margin: auto;
+    padding: 6px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(54, 65, 83);
+    background-color: white;
+    margin-bottom: 0.5rem;
+}
+
+.aboutme-account-aboutmebtn:hover {
+    cursor: pointer;
+    background-color: rgb(227, 232, 239);
+}
+
+.aboutme-account-aboutmeicon {
+    display: flex;
+    align-items: center;
+    /* margin-right: 5px; */
+}
+.message-of-empty-bio{
+    font-family: 'Poppins';
+    color: rgb(96, 109, 131);
+    text-align: center;
+}
