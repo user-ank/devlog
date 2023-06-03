@@ -127,7 +127,7 @@ function BlogHome(prop) {
 							<div className='blogBodyContentDiv'>
 								<div className='blogBodyTitle'>{blog.title}</div>
 								<div className='blogBodyMinRead'>{blog.minRead} min read</div>
-								<div className='blogBodyContent'>{blog.content}</div>
+								<div className='blogBodyContent'>{blog.content}...</div>
 							</div>
 							<div className='blogBodyImageDiv'> {/*  put image here */}
 								{blog.ContainImage ? <img className='blogBodyImage' src={blog.photo}/> : null}
