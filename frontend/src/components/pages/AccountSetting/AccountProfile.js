@@ -1,6 +1,6 @@
 import React from 'react'
 import './AccountProfile.css'
-import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import EditIcon from '@mui/icons-material/Edit';
 import ShareIcon from '@mui/icons-material/Share';
 
 function AccountProfile() {
@@ -33,9 +33,9 @@ function AccountProfile() {
                     <div className="sharebtn">
                         <ShareIcon />
                     </div>
-                    <div className="account-profile-followbtn">
-                        <div className="account-profile-followicon"> <PersonAddAltIcon /> </div>
-                        <div className="account-profile-follow"> Follow </div>
+                    <div className="account-profile-editbtn">
+                        <div className="account-profile-editicon"> <EditIcon /> </div>
+                        <div className="account-profile-edit"> Edit </div>
                     </div>
                 </div>
             </div>

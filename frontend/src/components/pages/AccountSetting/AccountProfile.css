@@ -88,26 +88,37 @@
     margin-right: 0.75rem;
 }
 
-.account-profile-followbtn {
+.sharebtn:hover {
+    background-color: rgb(227, 232, 239);
+}
+
+.account-profile-editbtn {
     border-radius: 99px;
     display: flex;
     height: 44px;
-    padding: 6px 15px;
+    padding: 7px 20px;
+    padding-right: 22px;
     align-items: center;
     color: white;
     background-color: rgb(53, 121, 246);
 }
 
-.account-profile-followbtn:hover {
+.account-profile-editbtn:hover {
     cursor: pointer;
+    background-color: rgb(14, 95, 245);
 }
 
-.account-profile-followicon {
+.account-profile-editicon {
     display: flex;
     align-items: center;
     margin-right: 7px;
 }
 
+/* .account-profile-edit{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} */
 .account-profile-useful-buttons {
     display: flex;
 }
