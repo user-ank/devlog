@@ -5,19 +5,22 @@ import '../HomePage/BlogListHome.css'
 import "./Bookmark.css";
 import BlogListHome from "../HomePage/BlogListHome";
 import { startLoader, finishLoader } from "../../Header/Header";
+import EmptyPage from "./EmptyPage";
 
 function Bookmark() {
 
     const [blogArray, setBlogArray] = useState([]);
     const PrivateApi = useAxiosPrivate();
-   
+    const [isEmpty, setEmpty] = useState(false);
 
     const getBookmarks = async () => {
 
         startLoader();
         const res = await PrivateApi.get("/users/bookmarkedPost/");
-        finishLoader();
         setBlogArray(res.data.data);
+        finishLoader();
+        if(res.data.data.length == 0)
+            setEmpty(true);
         console.log(res);
     };
     
@@ -37,9 +40,10 @@ function Bookmark() {
     return (
         <div id="bookmark">
               <LeftSide/>
-              <BlogListHome header="Bookmarks page" blogs={blogArray}/> {/*  Reusing the component; There is no need to use all the features of this component here 
-                                    but better writing the entire component*/}
-              
+              {isEmpty ? <EmptyPage/> : <BlogListHome header="Bookmarks page" blogs={blogArray}/>} 
+            
+            {/* Reusing the BlogListHome component; EmptyPage will be shown in case of no bookmarks*/}
+                   
         </div>
     )
 }
