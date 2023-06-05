@@ -12,6 +12,13 @@
 
 .account-profile-top {
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.account-profile_1 {
+    display: flex;
+    flex-direction: row;
 }
 
 .account-profile-profilepic {
@@ -21,12 +28,32 @@
     cursor: pointer;
 }
 
+.profilephoto {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-photo-delete-btn {
+    position: absolute;
+    top: 6px;
+    right: 4px;
+    background-color: white;
+    border: 1px solid rgb(218, 218, 218);
+    padding: 0.25rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .account-profile-user-info {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     padding-left: 2.5rem;
     padding-right: 1.25rem;
+
 }
 
 .account-profile-user-name {

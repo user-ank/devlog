@@ -140,9 +140,8 @@ function Header() {
                                                 My Bookmarks
                                             </div>
                                         </Link>
-                                        <Link to="/devlog/username/accountsetting" onClick={closeModal}>
-                                            <div className='account_setting options'>
-
+                                        <Link to="/devlog/account">
+                                            <div className='account_setting options' onClick={closeModal}>
                                                 <div className="material-icons"><ManageAccountsIcon /></div>
                                                 Account Settings
                                             </div>

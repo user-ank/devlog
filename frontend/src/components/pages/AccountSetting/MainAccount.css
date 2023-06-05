@@ -42,7 +42,8 @@
     background-color: white;
     margin-bottom: 1.25rem;
 }
-.user-techstack-and-availablefor-component{
+
+.user-techstack-and-availablefor-component {
     font-family: 'Poppins';
     width: 90%;
     border-radius: 8px;
@@ -50,6 +51,15 @@
     margin-bottom: 1.25rem;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+}
+
+.user-basic-info-component {
+    font-family: 'Poppins';
+    width: 90%;
+    border-radius: 8px;
+    border: 0.1px solid rgb(218, 218, 218);
+    background-color: white;
+    margin-bottom: 1.25rem;
 }

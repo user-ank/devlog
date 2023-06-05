@@ -125,12 +125,12 @@ function BlogHome(prop) {
 					<Link to={"/devlog/" + blog.user.userName + "/" + blog.title}>
 						<div className='blogBody'>
 							<div className='blogBodyContentDiv'>
-								<div className='blogBodyTitle'>{blog.title}</div>
-								<div className='blogBodyMinRead'>{blog.minRead} min read</div>
-								<div className='blogBodyContent'>{blog.content}...</div>
+								<div className='blogBodyTitle'>{blog?.title}</div>
+								<div className='blogBodyMinRead'>{blog?.minRead} min read</div>
+								<div className='blogBodyContent'>{blog?.content}...</div>
 							</div>
 							<div className='blogBodyImageDiv'> {/*  put image here */}
-								{blog.ContainImage ? <img className='blogBodyImage' src={blog.photo}/> : null}
+								{blog.ContainImage ? <img className='blogBodyImage' src={blog?.photo}/> : null}
 							</div>					
 						</div>
 					</Link>

@@ -17,6 +17,7 @@ import User from './components/pages/UserPage/User';
 import Signup from './components/pages/Authentication/Signup';
 import Bookmark from './components/pages/BookmarkPage/Bookmark';
 import Account from './components/pages/AccountSetting/Account';
+import ProfileAccount from './components/pages/ProfilePage/ProfileAccount';
 
 function App() {
   return (
@@ -38,10 +39,10 @@ function App() {
             <Route path='/devlog/profile' element={<RequireAuth><Profile /></RequireAuth>} />
             <Route path='/devlog/bookmarks' element={<RequireAuth><Bookmark /></RequireAuth>} />
             <Route path='/devlog/:username/' element={<User />} />
-            <Route path='/devlog/:username/accountsetting' element={<RequireAuth><Account /></RequireAuth>} />
+            <Route path='/devlog/account' element={<RequireAuth><Account /></RequireAuth>} />
           </Route>
           <Route path='/devlog/:username/:blogTitle' element={<BlogPage />} />
-
+          <Route path='/devlog/:username/profile' element={<ProfileAccount />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </AuthProvider>

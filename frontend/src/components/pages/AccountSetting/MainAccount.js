@@ -5,6 +5,7 @@ import Usersocials from "./Usersocials";
 import Aboutme from './Aboutme';
 import MyTechStack from './MyTechStack';
 import AvailableFor from './AvailableFor';
+import BasicInfo from './BasicInfo';
 
 function MainAccount() {
     return (
@@ -22,6 +23,10 @@ function MainAccount() {
                 <MyTechStack/>
                 <AvailableFor/>
             </div>
+            <div className="user-basic-info-component">
+                <BasicInfo/>
+            </div>
+
         </div>
     )
 }
