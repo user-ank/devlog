@@ -13,12 +13,11 @@ const emailVerificationTokenSchema = mongoose.Schema({
     },
     createdAt:{
         type: Date,
-        // expires: 10,
         default: Date.now
     }
 })
 
-emailVerificationTokenSchema.index({ createdAt: 1 }, { expireAfterSeconds: 40 });
+// emailVerificationTokenSchema.index({ createdAt: 1 }, { expireAfterSeconds: 40 });
 
 emailVerificationTokenSchema.pre('save',async function (next){
     if(this.isModified("token")) {

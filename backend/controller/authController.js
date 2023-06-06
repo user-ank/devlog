@@ -4,7 +4,7 @@ const { promisify } = require('util');
 const crypto = require('crypto');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/AppError');
-// const sendEmail = require('./../utils/email');
+const schedule = require('node-schedule');
 const { LOADIPHLPAPI } = require('dns');
 const UserToken = require('./../model/user/userToken');
 const verifyRefreshToken = ('./../utils/varifyRefreshToken');
@@ -39,14 +39,16 @@ const createSendToken = async (user, msg,statusCode, res) => {
     user.password = undefined;
 
     res.cookie('jwt', refreshToken, cookieOptions);
-    // res.cookie('hello', 'fuckall');
     res.status(statusCode).json({
         status: 'success',
         accessToken,
         refreshToken,
         message: msg,
         data: {
-            profilePhoto: user.profilePhoto
+            profilePhoto: user.profilePhoto,
+            username: user.userName,
+            name: user.name,
+            draft: user.isAnyDraft
         }
     });
 }
@@ -168,7 +170,7 @@ exports.signup = catchAsync(async (req, res, next) => {
         const newUser = await User.create({ name: name, email: email, password: password, userName: userName });
         // const newUser = await User.create(req.body);
         const OTP = genarateOTP();
-        await EmailVerificationToken.create({ owner: newUser._id, token: OTP });
+        const emailVarification = await EmailVerificationToken.create({ owner: newUser._id, token: OTP });
         
         const options = {
             OTP: OTP,
@@ -180,6 +182,19 @@ exports.signup = catchAsync(async (req, res, next) => {
 
         const msg = "Please verify your email. OTP has been sent to your email !"
         await sendEmail(options);
+
+        const currentDate = new Date();
+        currentDate.setMinutes(currentDate.getMinutes() + 1);
+        // currentDate.setSeconds(currentDate.getSeconds() + 55);
+
+        schedule.scheduleJob(currentDate,async () => {
+            const stillExistToken = await EmailVerificationToken.findOne({owner: newUser._id});
+            if(stillExistToken){
+                await EmailVerificationToken.findByIdAndDelete(emailVarification._id);
+                await User.findByIdAndDelete(newUser._id);
+            }
+        });
+
         res.status(200).send({msg:msg});
         // createSendToken(newUser,msg, 201, res);
           
@@ -250,6 +265,12 @@ exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError('Please provide email or password 🙃🙃🙃 !!', 400));
     }
     const user = await User.findOne({ email }).select('+password');
+
+    if(!user.isVerified){
+        return res.status(200).send({
+            message: 'Please Register in DEVLog and verify your E-Mail.'
+        })
+    }
 
     if (!user || !await user.correctPassword(password, user.password)) {
         return next(new AppError('Incorrect Email or Password 😔😔😔😔 !!', 401));

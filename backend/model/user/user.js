@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "userName is required"],
     },
-    profilePhoto: { 
+    profilePhoto: {
       type: String,
       default: "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
     },
@@ -32,42 +32,42 @@ const userSchema = new mongoose.Schema(
     Twitter_Profile: {
       type: String,
     },
-    GitHub_Profile:{
+    GitHub_Profile: {
       type: String,
     },
-    StackOverflow_Profile:{
+    StackOverflow_Profile: {
       type: String,
     },
-    Instagram_Profile:{
+    Instagram_Profile: {
       type: String,
     },
-    Facebook_Profile:{
+    Facebook_Profile: {
       type: String,
     },
-    Website_URL:{
+    Website_URL: {
       type: String,
     },
-    LinkedIn_URL:{
+    LinkedIn_URL: {
       type: String,
     },
-    YouTube_Channel:{
+    YouTube_Channel: {
       type: String,
     },
-    Profile_Tagline:{
+    Profile_Tagline: {
       type: String,
     },
-    Profile_Bio:{
+    Profile_Bio: {
       type: String,
       max: 250
     },
-    Tech_Stack:{
+    Tech_Stack: {
       type: String,
       max: 100
     },
-    Location:{
+    Location: {
       type: String,
     },
-    Available_for:{
+    Available_for: {
       type: String,
       max: 250
     },
@@ -89,13 +89,22 @@ const userSchema = new mongoose.Schema(
         ref: "Post",
       },
     ],
+    drafts:
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Draft",
+    },
+    isAnyDraft:{
+      type: Boolean,
+      default: false
+    },
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comment",
       },
     ],
-    like:[
+    like: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
@@ -121,16 +130,16 @@ const userSchema = new mongoose.Schema(
       default: true,
       select: false
     },
-    isVerified:{
+    isVerified: {
       type: Boolean,
       required: true,
       default: false
     },
     Bookmarked_Post: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Post"
-    }]
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post"
+      }]
 
   },
   {

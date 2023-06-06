@@ -8,6 +8,8 @@ const multer = require("multer");
 const {
   SearchPosts,
   createPostCtrl,
+  draftCtrl,
+  getDraft,
   deletePostCtrl,
   updatePostCtrl,
   fetchPostCtrl,
@@ -22,18 +24,20 @@ const {
 const {protect} = require('./../../controller/authController');
 
 
-
-// const isLogin = require("../../middlewares/isLogin");
 postRouter.get("/",fetchPostCtrl);
 postRouter.get("/user/:id",userPostsCtrl);   // soln => change get to post method
 postRouter.post("/search",SearchPosts);
 
 
 postRouter.use(protect);
+
 postRouter.get("/authenticateUser",AuthecticatefetchPostCtrl);
 const upload = multer({ storage });
 postRouter.post("/",upload.single("image"), createPostCtrl);
 postRouter.post("/likePost/:id",likeCtrl);
+postRouter.post('/draft',draftCtrl);
+postRouter.get('/draft',getDraft);
+
 // postRouter.post("/bookmarkPost/:id",bookmarksCtrl);
 
 

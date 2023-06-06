@@ -2,38 +2,103 @@ const Post = require("../../model/post/post");
 const User = require("../../model/user/user");
 const Category = require("../../model/category/category");
 const appErr = require("../../utils/appErr");
-const APIFeatures = require('./../../utils/API Features');
-const catchAsync = require('./../../utils/catchAsync');
+const APIFeatures = require("./../../utils/API Features");
+const catchAsync = require("./../../utils/catchAsync");
+const Draft = require("../../model/draft/draft");
 
 function createStringWithFixedWords(content, numWords) {
-  // Split the content into an array of words
-  const words = content.split(' ');
-
-  // Extract the desired number of words
+  const words = content.split(" ");
   const selectedWords = words.slice(0, numWords);
-
-  // Join the extracted words back into a string
-  const result = selectedWords.join(' ');
-
+  const result = selectedWords.join(" ");
   return result;
 }
 
+const draftCtrl = catchAsync(async (req, res) => {
+  const { title, subtitle, category, content } = req.body;
+
+  const author = await User.findById(req.user);
+
+  const existUserDraft = await Draft.findOne({ user: req.user });
+  if (existUserDraft) {
+    // console.log("HIiii");
+    await Draft.findByIdAndDelete(author.drafts);
+  }
+
+  const creationTime = Date.now();
+
+  const draftCreated = await Draft.create({
+    title,
+    subtitle,
+    user: author._id,
+    category,
+    content,
+    creationTime,
+    photo: req && req.file && req.file.path,
+  });
+
+  if (draftCreated.photo) {
+    draftCreated.ContainImage = true;
+    await draftCreated.save();
+  }
+
+  author.drafts = draftCreated._id;
+  author.isAnyDraft = true;
+  await author.save();
+
+  res.status(201).send({
+    status: "success",
+    data: {
+      data: draftCreated,
+    },
+  });
+});
+
+
+const getDraft = catchAsync(async (req, res) => {
+  const existUserDraft = await Draft.findOne({ user: req.user });
+
+  if (existUserDraft) {
+    const data = await Draft.findById(existUserDraft._id);
+    res.status(200).send({
+      status: "success",
+      data: {
+        data: data,
+      },
+    });
+  } else {
+    res.status(404).send({
+      message: "Draft not found.🙃🙃🙃",
+    });
+  }
+});
+
+
+
 const createPostCtrl = catchAsync(async (req, res, next) => {
-  const { title, subtitle, category, content, ContainImage } = req.body;
+  const { title, subtitle, category, content, ContainImage,isAnyDraft } = req.body;
   const author = await User.findById(req.user);
   // console.log(req.user);
 
-  // const summary = content.substring(0, 200);
-  let summary = createStringWithFixedWords(content,50);
-  summary += '....'; 
+  if(isAnyDraft){
+    const draftData = await Draft.findOne({user:req.user});
+    // console.log(draftData);
+    await Draft.findByIdAndDelete(draftData._id);
+    author.isAnyDraft = false;
+    author.drafts = null;
+    await author.save();
+  }
 
-  const creationTime = Date.now()
+  // const summary = content.substring(0, 200);
+  let summary = createStringWithFixedWords(content, 50);
+  summary += "....";
+
+  const creationTime = Date.now();
 
   function countWords(str) {
     return str.trim().split(/\s+/).length;
   }
 
-  const minute_read = Math.ceil((countWords(content) / 2) / 60);
+  const minute_read = Math.ceil(countWords(content) / 2 / 60);
 
   const postCreated = await Post.create({
     title,
@@ -60,16 +125,14 @@ const createPostCtrl = catchAsync(async (req, res, next) => {
   res.status(201).json({
     status: "success",
     data: {
-      data: postCreated
+      data: postCreated,
     },
   });
 });
 
-
 //for all post
 const fetchPostCtrl = async (req, res, next) => {
   try {
-
     const posts = new APIFeatures(Post.find({}).populate("user"), req.query)
       .filter()
       .sort()
@@ -78,43 +141,38 @@ const fetchPostCtrl = async (req, res, next) => {
 
     const doc1 = await posts.query;
 
-
     let doc = [];
 
     doc1.map((obj) => {
-      doc.push(
-        {
-          title: obj.title,
-          id: obj._id,
-          likeCnt: obj.likes.length,
-          content: obj.summary,
-          minRead: obj.minute_read,
-          photo: obj.photo,
-          user: {
-            userName: obj.user.userName,
-            name: obj.user.name,
-            userId: obj.user._id,
-            profilePhoto: obj.user.profilePhoto
-          },
-          updatedAt: obj.updatedAt,
-          ContainImage: obj.ContainImage,
-          creationTime:obj.creationTime
-        }
-      )
-    })
+      doc.push({
+        title: obj.title,
+        id: obj._id,
+        likeCnt: obj.likes.length,
+        content: obj.summary,
+        minRead: obj.minute_read,
+        photo: obj.photo,
+        user: {
+          userName: obj.user.userName,
+          name: obj.user.name,
+          userId: obj.user._id,
+          profilePhoto: obj.user.profilePhoto,
+        },
+        updatedAt: obj.updatedAt,
+        ContainImage: obj.ContainImage,
+        creationTime: obj.creationTime,
+      });
+    });
 
     res.json({
       status: "success",
       data: {
-        doc
-      }
+        doc,
+      },
     });
   } catch (error) {
     next(appErr(error.message));
   }
-
 };
-
 
 const AuthecticatefetchPostCtrl = async (req, res, next) => {
   try {
@@ -128,7 +186,6 @@ const AuthecticatefetchPostCtrl = async (req, res, next) => {
 
     const currentUser = await User.findById(req.user);
 
-
     // CODE COMPLEXCITY I HAVE TO REDUCE.
     currentUser.like.map(async (obj) => {
       doc1.map(async (ele) => {
@@ -137,7 +194,7 @@ const AuthecticatefetchPostCtrl = async (req, res, next) => {
         if (x == y) {
           ele.isLike = true;
         }
-      })
+      });
     });
 
     // doc1.map(async (obj) => {
@@ -157,51 +214,45 @@ const AuthecticatefetchPostCtrl = async (req, res, next) => {
         if (x == y) {
           ele.isBookmarked = true;
         }
-      })
+      });
     });
 
     let doc = [];
 
     doc1.map((obj) => {
-      doc.push(
-        {
-          title: obj.title,
-          id: obj._id,
-          isLike: obj.isLike,
-          isBookmarked: obj.isBookmarked,
-          likeCnt: obj.likes.length,
-          content: obj.summary,
-          minRead: obj.minute_read,
-          photo: obj.photo,
-          user: {
-            userName: obj.user.userName,
-            name: obj.user.name,
-            userId: obj.user._id,
-            profilePhoto: obj.user.profilePhoto
-          },
-          updatedAt: obj.updatedAt,
-          ContainImage: obj.ContainImage,
-          creationTime:obj.creationTime
-        }
-      )
-    })
-
+      doc.push({
+        title: obj.title,
+        id: obj._id,
+        isLike: obj.isLike,
+        isBookmarked: obj.isBookmarked,
+        likeCnt: obj.likes.length,
+        content: obj.summary,
+        minRead: obj.minute_read,
+        photo: obj.photo,
+        user: {
+          userName: obj.user.userName,
+          name: obj.user.name,
+          userId: obj.user._id,
+          profilePhoto: obj.user.profilePhoto,
+        },
+        updatedAt: obj.updatedAt,
+        ContainImage: obj.ContainImage,
+        creationTime: obj.creationTime,
+      });
+    });
 
     res.json({
       status: "success",
       data: {
-        doc
-      }
+        doc,
+      },
     });
   } catch (error) {
     next(appErr(error.message));
   }
 };
 
-
-
 const SearchPosts = catchAsync(async (req, res, next) => {
-
   // const searchTerm = req.body.text;
   // const regexTerm = new RegExp(searchTerm, 'i');
   // const results = await Post.find({
@@ -214,44 +265,41 @@ const SearchPosts = catchAsync(async (req, res, next) => {
 
   // res.send(results);
 
-
   let results;
   console.log(req.query.text);
 
   if (req.query.text) {
     // if (req.query.text.includes(",") || req.query.text.includes(" ")) {
-    results = await
-      Post.aggregate([
-        {
-          $search: {
-            index: "autocomplete",
-            autocomplete: {
-              query: req.query.text,
-              path: "title",
-              fuzzy: {
-                maxEdits: 1,
-              },
-              tokenOrder: "sequential",
+    results = await Post.aggregate([
+      {
+        $search: {
+          index: "autocomplete",
+          autocomplete: {
+            query: req.query.text,
+            path: "title",
+            fuzzy: {
+              maxEdits: 1,
             },
+            tokenOrder: "sequential",
           },
         },
-        {
-          $project: {
-            // searchName: 1,
-            _id: 1,
-            title: 1,
-            subtitle: 1,
-            summary: 1,
-            minute_read: 1,
-            content: 1,
-            score: { $meta: "searchScore" },
-          },
-        }
-      ])
+      },
+      {
+        $project: {
+          // searchName: 1,
+          _id: 1,
+          title: 1,
+          subtitle: 1,
+          summary: 1,
+          minute_read: 1,
+          content: 1,
+          score: { $meta: "searchScore" },
+        },
+      },
+    ]);
   }
   res.send(results);
-})
-
+});
 
 const likeCtrl = catchAsync(async (req, res, next) => {
   const currentUser = await User.findById(req.user);
@@ -259,24 +307,31 @@ const likeCtrl = catchAsync(async (req, res, next) => {
   if (!currentUser.like.includes(req.params.id)) {
     currentUser.like.push(req.params.id);
     await currentUser.save();
-    await Post.findByIdAndUpdate(req.params.id, { $push: { "likes": currentUser.id } }, { safe: true, upsert: true, new: true })
+    await Post.findByIdAndUpdate(
+      req.params.id,
+      { $push: { likes: currentUser.id } },
+      { safe: true, upsert: true, new: true }
+    );
 
     res.status(200).json({
-      message: "successfully liked"
+      message: "successfully liked",
     });
-  }
-  else {
-    currentUser.like = currentUser.like.filter(item => item.toString() !== req.params.id.toString())
+  } else {
+    currentUser.like = currentUser.like.filter(
+      (item) => item.toString() !== req.params.id.toString()
+    );
     await currentUser.save();
-    await Post.findByIdAndUpdate(req.params.id, { $pull: { "likes": currentUser.id } }, { safe: true, upsert: true, new: true })
+    await Post.findByIdAndUpdate(
+      req.params.id,
+      { $pull: { likes: currentUser.id } },
+      { safe: true, upsert: true, new: true }
+    );
 
     res.status(200).json({
-      message: "successfully like removed"
+      message: "successfully like removed",
     });
   }
-
 });
-
 
 // const bookmarksCtrl = catchAsync(async(req,res,next) => {
 //   const currentUser = await User.findById(req.user);
@@ -309,7 +364,9 @@ const userPostsCtrl = async (req, res, next) => {
     if (USer.length > 0) {
       const user_id = USer[0]._id;
 
-      const UsersPost = await Post.find({ user: user_id }).sort({ createdAt: -1 }).populate("user");
+      const UsersPost = await Post.find({ user: user_id })
+        .sort({ createdAt: -1 })
+        .populate("user");
       res.status(200).json({
         status: "success",
 
@@ -324,7 +381,6 @@ const userPostsCtrl = async (req, res, next) => {
     next(appErr(error.message));
   }
 };
-
 
 // for viewing single post
 const postDetailsCtrl = async (req, res) => {
@@ -347,11 +403,9 @@ const postDetailsCtrl = async (req, res) => {
   }
 };
 
-
 //Delete/api/v1/posts/:id
 const deletePostCtrl = async (req, res, next) => {
   try {
-
     // When user delete blog then we have to delete blog id from user model.
     const post = await Post.findById(req.params.id);
     if (post.user.toString() !== req.userAuth.toString()) {
@@ -368,7 +422,6 @@ const deletePostCtrl = async (req, res, next) => {
   }
 };
 
-
 //put/api/v1/posts/:id
 const updatePostCtrl = async (req, res, next) => {
   const { title, subtitle, description, category, photo } = req.body;
@@ -381,8 +434,7 @@ const updatePostCtrl = async (req, res, next) => {
     }
 
     const summary = content.substring(0, 200);
-    const updateTime = Date.now()
-
+    const updateTime = Date.now();
 
     await Post.findByIdAndUpdate(
       req.params.id,
@@ -403,10 +455,9 @@ const updatePostCtrl = async (req, res, next) => {
         return str.trim().split(/\s+/).length;
       }
 
-      const minute_read = Math.ceil((countWords(content) / 2) / 60);
+      const minute_read = Math.ceil(countWords(content) / 2 / 60);
       await Post.findByIdAndUpdate(req.params.id, { minute_read: minute_read });
     }
-
 
     const updatePhoto = Post.findById(req.params.id);
 
@@ -420,12 +471,10 @@ const updatePostCtrl = async (req, res, next) => {
       status: "success",
       data: post,
     });
-
   } catch (error) {
     next(appErr(error.message));
   }
 };
-
 
 const BookmarkPostCtrl = async (req, res, next) => {
   try {
@@ -444,10 +493,10 @@ const BookmarkPostCtrl = async (req, res, next) => {
       );
 
       await user.save();
-      return (res.status(201).json({
+      return res.status(201).json({
         status: "success",
-        data: "bookmarked removed"
-      }));
+        data: "bookmarked removed",
+      });
     } else {
       user.Bookmarked_Post.push(req.params.id);
 
@@ -455,7 +504,6 @@ const BookmarkPostCtrl = async (req, res, next) => {
     }
 
     res.status(200).json({
-
       status: "success",
       data: "successfully bookmarked",
     });
@@ -466,6 +514,8 @@ const BookmarkPostCtrl = async (req, res, next) => {
 
 module.exports = {
   SearchPosts,
+  draftCtrl,
+  getDraft,
   createPostCtrl,
   likeCtrl,
   deletePostCtrl,

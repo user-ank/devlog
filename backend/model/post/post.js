@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching');
+
 
 const postSchema = new mongoose.Schema({
 
@@ -81,20 +81,8 @@ const postSchema = new mongoose.Schema({
   postSchema.index({ title: "text", subtitle: "text" });
 
 
-// postSchema.index({ title: "text" });
-// postSchema.index({subtitle: "text"});
 
-// postSchema.plugin(mongoose_fuzzy_searching, { fields: [
-//   {
-//     name: 'title',
-//     minSize: 3,
-//     weight: 1,
-//     fuzzy: {
-//       maxDistance: 2,
-//       prefixLength: 2
-//     }
-//   }]
-//  });
+
 
 //hook
 postSchema.pre(/^find/, function (next) {
