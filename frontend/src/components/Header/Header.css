@@ -2,6 +2,7 @@
     background: none;
   }
   .qheader-modal {
+    font-family: "Poppins";
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -33,7 +34,7 @@
   .options {
     height: 30px;
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     padding: 0px 8px;
     border: none;
     width: 100%;
@@ -45,6 +46,7 @@
   }
 
   .material-icons {
+    color: #413f3f;
     padding-right: 5px;
   }
 

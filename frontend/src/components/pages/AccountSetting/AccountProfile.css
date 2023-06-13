@@ -1,0 +1,151 @@
+/* .account-profile {
+    font-family: 'Poppins';
+    width: 90%;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    border: 0.1px solid rgb(218, 218, 218);
+    border-radius: 8px;
+    background-color: white;
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+} */
+
+.account-profile-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.account-profile_1 {
+    display: flex;
+    flex-direction: row;
+}
+
+.account-profile-profilepic {
+    height: 160px;
+    width: 160px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.profilephoto {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-photo-delete-btn {
+    position: absolute;
+    top: 6px;
+    right: 4px;
+    background-color: white;
+    border: 1px solid rgb(218, 218, 218);
+    padding: 0.25rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.account-profile-user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-left: 2.5rem;
+    padding-right: 1.25rem;
+
+}
+
+.account-profile-user-name {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.account-profile-user-tagline {
+    width: 100%;
+}
+
+.account-profile-nums {
+    margin-right: 1.25rem;
+    line-height: 2;
+    cursor: pointer;
+}
+
+.account-profile-count {
+    font-weight: 700;
+    margin-right: 7px;
+}
+
+.account-profile-social-count {
+    display: flex;
+    margin-top: 1.25rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.usertagline {
+    margin-top: 0.75rem;
+    font-size: 1.125rem;
+    line-height: 1.375;
+}
+
+.account-profile-numfollower {
+    display: flex;
+    flex-direction: row;
+}
+
+.account-profile-numfollowing {
+    display: flex;
+    flex-direction: row;
+}
+
+.sharebtn {
+    border: 1px solid rgb(218, 218, 218);
+    border-radius: 50px;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* margin: 0px 10px; */
+    margin-right: 0.75rem;
+}
+
+.sharebtn:hover {
+    background-color: rgb(227, 232, 239);
+}
+
+.account-profile-editbtn {
+    border-radius: 99px;
+    display: flex;
+    height: 44px;
+    padding: 7px 20px;
+    padding-right: 22px;
+    align-items: center;
+    color: white;
+    background-color: rgb(53, 121, 246);
+}
+
+.account-profile-editbtn:hover {
+    cursor: pointer;
+    background-color: rgb(14, 95, 245);
+}
+
+.account-profile-editicon {
+    display: flex;
+    align-items: center;
+    margin-right: 7px;
+}
+
+/* .account-profile-edit{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+} */
+.account-profile-useful-buttons {
+    display: flex;
+}
