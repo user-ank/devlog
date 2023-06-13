@@ -9,8 +9,8 @@ function Usersocials() {
                 <span className="usersocial-socials-logo-bg"><img className="usersocial-socials-logo" alt="github" src={require('../../img/github.png')} /></span>
                 <span className="usersocial-socials-logo-bg"><img className="usersocial-socials-logo" alt="twitter" src={require('../../img/twitter.png')} /></span>
                 <span className="usersocial-socials-logo-bg"><img className="usersocial-socials-logo" alt="facebook" src={require('../../img/facebook.png')} /></span>
-                <span className="usersocial-socials-logo-bg"><img className="usersocial-socials-logo" alt="stackoverflow" src={require('../../img/stackoverflow.png')} /></span>
                 <span className="usersocial-socials-logo-bg"><img className="usersocial-socials-logo" alt="linkedin" src={require('../../img/linkedin.png')} /></span>
+                <span className="usersocial-socials-logo-bg"><img className="usersocial-socials-logo" alt="stackoverflow" src={require('../../img/stackoverflow.png')} /></span>
                 <span className="usersocial-socials-logo-bg"><img className="usersocial-socials-logo" alt="youtube" src={require('../../img/youtube.png')} /></span>
                 <span className="usersocial-socials-logo-bg"><img className="usersocial-socials-logo" alt="instagram" src={require('../../img/instagram.png')} /></span>
             </div>

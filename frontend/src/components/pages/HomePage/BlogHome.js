@@ -92,6 +92,9 @@ function BlogHome(prop) {
 			console.log('ready to bookmark');
 		}
 	}
+	function ProfilePage() {
+		const isOtherUser=true;
+	}
 
 	return (
 		<>
@@ -99,8 +102,8 @@ function BlogHome(prop) {
 
 			<div className='blogContainer'>
 				<div className='blogHeader'>
-					<Link to={"/devlog/" + blog?.user?.userName + "/profile"} >
-						<img className='blogHeaderImage' src={blog?.user?.profilePhoto} alt='blogHeader' />
+					<Link to={"/devlog/account/" + blog?.user?.userName} >
+						<img className='blogHeaderImage' src={blog?.user?.profilePhoto} alt='blogHeader' onClick={ProfilePage}/>
 					</Link>
 					<Link to={"/devlog/" + blog?.user?.userName} target="_blank" >
 						<div className='blogHeaderNameTimeDiv'>

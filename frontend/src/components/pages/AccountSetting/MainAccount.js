@@ -6,15 +6,18 @@ import Aboutme from './Aboutme';
 import MyTechStack from './MyTechStack';
 import AvailableFor from './AvailableFor';
 import BasicInfo from './BasicInfo';
+import AccountContext from '../../../context/accountContext';
 
 function MainAccount() {
+    const isUsersProfile = React.useContext(AccountContext);
+
     return (
         <div className='main-account'>
             <div className="account-prof">
                 <AccountProfile/>
             </div>
             <div className="account-user-soc">
-                <Usersocials/>
+                <Usersocials />
             </div>
             <div className="user-aboutme-component">
                 <Aboutme/>
@@ -23,9 +26,12 @@ function MainAccount() {
                 <MyTechStack/>
                 <AvailableFor/>
             </div>
-            <div className="user-basic-info-component">
-                <BasicInfo/>
-            </div>
+            {
+                isUsersProfile && <div className="user-basic-info-component">
+                    <BasicInfo />
+                </div>
+
+            }
 
         </div>
     )
