@@ -1,5 +1,5 @@
 import Navbar from './Navbar';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState } from 'react';
 import Searchbar from './Searchbar';
 import { logout } from '../../api';
 import { useAuth } from '../../context/auth'
@@ -128,8 +128,8 @@ function Header() {
                                     <div className="modal__info">
                                         <Avatar src={(auth?.user?.profilePhoto)} className='avatar' />
                                         <div className="user_info">
-                                            <h3 className='user-profle-name'>Anuj Patel</h3>
-                                            <p className='user-id'>@anujpatel03</p>
+                                            <h3 className='user-profle-name'>{auth?.user?.fullName}</h3>
+                                            <p className='user-id'>@{auth?.user?.userName}</p>
                                         </div>
                                     </div>
                                     <div className="horizontal-line"></div>

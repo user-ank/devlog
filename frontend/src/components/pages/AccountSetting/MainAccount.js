@@ -11,6 +11,14 @@ import AccountContext from '../../../context/accountContext';
 function MainAccount() {
     const isUsersProfile = React.useContext(AccountContext);
 
+    const stylingNavbar = () => {
+        let list = document.getElementsByClassName("navImg");
+        for (let element of list) {
+            element.classList.remove("navActive");
+        }
+    };
+    stylingNavbar();
+    
     return (
         <div className='main-account'>
             <div className="account-prof">

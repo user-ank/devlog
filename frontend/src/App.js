@@ -39,10 +39,10 @@ function App() {
             <Route path='/devlog/bookmarks' element={<RequireAuth><Bookmark /></RequireAuth>} />
             <Route path='/devlog/:username/' element={<User />} />
             <Route path='/devlog/account' element={<RequireAuth><Account isUsersProfile={true}/></RequireAuth>} />
+            <Route path='/devlog/account/:username' element={<Account isUsersProfile={false}/>} />
+            <Route path='/devlog/:username/:blogTitle' element={<BlogPage />} />
+            <Route path='*' element={<NotFound />} />
           </Route>
-          <Route path='/devlog/:username/:blogTitle' element={<BlogPage />} />
-          <Route path='/devlog/account/:username' element={<Account isUsersProfile={false}/>} />
-          <Route path='*' element={<NotFound />} />
         </Routes>
       </AuthProvider>
 

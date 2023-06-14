@@ -40,11 +40,14 @@ const createSendToken = async (user, statusCode, res) => {
     // res.cookie('hello', 'fuckall');
     res.status(statusCode).json({
         status: 'success',
-        accessToken,
-        refreshToken,
-        data: {
-            profilePhoto: user.profilePhoto
-        }
+        data:{
+            accessToken,
+            refreshToken,     
+            profilePhoto: user.profilePhoto,
+            fullName : user.name,
+            userName : user.userName,
+            email : user.email
+        }     
     });
 }
 
@@ -80,10 +83,12 @@ exports.renewAccessToken = catchAsync(async (req, res, next) => {
     const accessToken = signToken(decoded.id, process.env.JWT_ACCESS_SECRET, process.env.JWT_ACCESS_EXPIRES_IN);
 
     const x = await User.findById(decoded.id);
-    // console.log(decoded.id);
     return res.status(201).json({
         accessToken: accessToken,
-        profilePhoto: x.profilePhoto
+        profilePhoto: x.profilePhoto,
+        fullName : x.name,
+        userName : x.userName,
+        email : x.email
     });
 });
 
