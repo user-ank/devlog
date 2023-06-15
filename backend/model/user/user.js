@@ -60,10 +60,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       max: 250
     },
-    Tech_Stack: {
-      type: String,
-      max: 100
-    },
+    Tech_Stack: [
+      {
+        type: String
+      }
+    ],
     Location: {
       type: String,
     },
@@ -135,6 +136,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: false
     },
+    creationTime:{
+      type: Date,
+      // default: Date.now
+    },
     Bookmarked_Post: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -143,7 +148,6 @@ const userSchema = new mongoose.Schema(
 
   },
   {
-    timestamps: true,
     toJSON: { virtuals: true },
   }
 );

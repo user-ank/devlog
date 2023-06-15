@@ -10,12 +10,11 @@ const {
   FollowCtrl,
   adminBlockUsersCtrl,
   adminUnBlockUsersCtrl,
-  userProfileByUserNameCtrl,
-  BookmarkedPostCtrl
+  getUserProfileCtrl,
+  BookmarkedPostCtrl,
+  profilePhotoUploadCtrl
 } = require("../../controller/user/userCtrl");
 
-
-// const isAdmin=require("../../middlewares/isAdmin");
 
 const {userValidator,validate} = require('./../../middlewares/validator');
 
@@ -34,21 +33,22 @@ userRouter.patch("/reset/:token", resetPassword);
 userRouter.post("/checkPassAndUserID",checkPassAndUserID)
 userRouter.get("/renewAccessToken",renewAccessToken)
 userRouter.delete("/logOut", logOut);
+userRouter.get("/getUserProfile/:username",getUserProfileCtrl);
 
 userRouter.use(protect);
 
 userRouter.patch("/updatePassword", updatePassword);
-userRouter.put("/updateMyProfile", updateProfileCtrl)
+userRouter.patch("/updateMyProfile", updateProfileCtrl)
 
 userRouter.get("/",usersCtrl);
 
 userRouter.get("/profile/",userProfileCtrl);
-userRouter.get("/profileByName/:id",userProfileByUserNameCtrl);
 userRouter.get("/profile-viewers/:id",whoViewedMyProfileCtrl);
 
 //GET/api/v1/users/following/:id
 userRouter.post("/following/:id",FollowCtrl);
 userRouter.get("/bookmarkedPost",BookmarkedPostCtrl)
+userRouter.post("/profile-photo-upload",upload.single('profile'),profilePhotoUploadCtrl);
 
 
 
@@ -67,7 +67,6 @@ userRouter.get("/bookmarkedPost",BookmarkedPostCtrl)
 // userRouter.put("/",updateUserCtrl);
 
 
-// userRouter.post("/profile-photo-upload",upload.single('profile'),profilePhotoUploadCtrl);
 
 
 //put/api/v1/users/admin-block/:id

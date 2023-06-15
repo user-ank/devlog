@@ -2,6 +2,7 @@ const path =require('path');
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const morgan = require("morgan");
 dotenv.config({ path: "./config/config.env" });
 const dbConnect = require("./config/db");
 const corsOptions = require('./utils/corsOptions');
@@ -23,6 +24,7 @@ app.use(cookieParser());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); //pass incoming payload
+app.use(morgan('dev'));
 
 const userRouter = require("./routes/users/userRoutes");
 const postRouter = require("./routes/posts/postRoutes");

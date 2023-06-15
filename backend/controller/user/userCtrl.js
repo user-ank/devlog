@@ -26,24 +26,40 @@ const userProfileCtrl = async (req, res, next) => {
   }
 };
 
-const userProfileByUserNameCtrl = async (req, res, next) => {
-  //as username is unique
-  // console.log(req.userAuth);
-  const UserName = req.params;
-  // console.log(name.id);
-  try {
-    const token = getTokenFromHeader(req);
-    // console.log(token);
-    const user = await User.find({ userName: UserName.id });
 
-    res.json({
-      status: "success",
-      data: user,
-    });
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
+const getUserProfileCtrl = catchAsync(async (req, res) => {
+  const username = req.params.username;
+  const user = await User.find({userName:username});
+
+  // console.log(user[0].name);
+
+  res.status(200).send({
+    status: "success",
+    data: {
+      name: user[0].name,
+      profilePhoto: user[0].profilePhoto,
+      twitter: user[0].Twitter_Profile,
+      gitHub: user[0].GitHub_Profile,
+      stackOverflow: user[0].StackOverflow_Profile,
+      instagram: user[0].Instagram_Profile,
+      facebook: user[0].Facebook_Profile,
+      website: user[0].Website_URL,
+      linkedIn: user[0].LinkedIn_URL,
+      youtube: user[0].YouTube_Channel,
+      profileTagline: user[0].Profile_Tagline,
+      profileBio: user[0].Profile_Bio,
+      techStack: user[0].Tech_Stack,
+      location: user[0].Location,
+      available_for: user[0].Available_for,
+      followers: user[0].followers.length,
+      following: user[0].following.length,
+      posts: user[0].posts.length,
+      userAward: user[0].userAward,
+      creationTime: user[0].creationTime,
+    }
+  });
+
+});
 
 const whoViewedMyProfileCtrl = async (req, res, next) => {
   try {
@@ -243,7 +259,6 @@ const deleteUserAccountCtrl = async (req, res, next) => {
 const updateProfileCtrl = catchAsync(async (req, res, next) => {
   const {
     name,
-    profilePhoto,
     Twitter_Profile,
     GitHub_Profile,
     StackOverflow_Profile,
@@ -259,11 +274,12 @@ const updateProfileCtrl = catchAsync(async (req, res, next) => {
     Available_for,
   } = req.body;
 
+  const arr = Tech_Stack.split(',')
+
   const updatedProfile = await User.findByIdAndUpdate(
     req.user,
     {
       name: name,
-      profilePhoto: profilePhoto,
       Twitter_Profile: Twitter_Profile,
       GitHub_Profile: GitHub_Profile,
       StackOverflow_Profile: StackOverflow_Profile,
@@ -274,50 +290,44 @@ const updateProfileCtrl = catchAsync(async (req, res, next) => {
       YouTube_Channel: YouTube_Channel,
       Profile_Tagline: Profile_Tagline,
       Profile_Bio: Profile_Bio,
-      Tech_Stack: Tech_Stack,
+      Tech_Stack: arr,
       Location: Location,
       Available_for: Available_for,
     },
     { new: true }
   );
 
-  res.status(201).send({ updatedProfile });
+  res.status(201).send({
+    data: "Successfully your account is updated 🙂🙂🙂"
+  });
 });
 
-// const profilePhotoUploadCtrl = async (req, res, next) => {
-//   // console.log(req.file)
-//   try {
-//     const userToUpdate = await User.findById(req.userAuth);
+const profilePhotoUploadCtrl = catchAsync(async (req, res, next) => {
 
-//     if (!userToUpdate) {
-//       return next(appErr("user not found", 403));
-//     }
-//     if (userToUpdate.isBlocked) {
-//       return next(appErr("action not allowed", 403));
-//     }
+    if (req.file) {
+      await User.findByIdAndUpdate(
+        req.user,
+        {
+          $set: {
+            profilePhoto: req.file.path,
+          },
+        },
+        {
+          new: true,
+        }
+      );
 
-//     if (req.file) {
-//       await User.findByIdAndUpdate(
-//         req.userAuth,
-//         {
-//           $set: {
-//             profilePhoto: req.file.path,
-//           },
-//         },
-//         {
-//           new: true,
-//         }
-//       );
-
-//       res.json({
-//         status: "success",
-//         data: "you have successfully uploaded profile photo ",
-//       });
-//     }
-//   } catch (error) {
-//     next(appErr(error.message, 500));
-//   }
-// };
+      res.status(200).send({
+        status: "success",
+        data: "you have successfully uploaded profile photo ",
+      });
+    }
+    else{
+      res.status(404).send({
+        data: "Please provide profile photo.",
+      });
+    }
+});
 
 const BookmarkedPostCtrl = async (req, res, next) => {
   try {
@@ -345,6 +355,7 @@ module.exports = {
   unblockUserCtrl,
   adminBlockUsersCtrl,
   adminUnBlockUsersCtrl,
-  userProfileByUserNameCtrl,
+  getUserProfileCtrl,
   BookmarkedPostCtrl,
+  profilePhotoUploadCtrl
 };

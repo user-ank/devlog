@@ -167,7 +167,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     if (resObj.usernameAva && resObj.emailAva) {
 
         const { name, email, password, userName } = req.body;
-        const newUser = await User.create({ name: name, email: email, password: password, userName: userName });
+        const creationTime = Date.now();
+        const newUser = await User.create({ name: name, email: email, password: password, userName: userName, creationTime: creationTime});
         // const newUser = await User.create(req.body);
         const OTP = genarateOTP();
         const emailVarification = await EmailVerificationToken.create({ owner: newUser._id, token: OTP });
@@ -266,14 +267,14 @@ exports.login = catchAsync(async (req, res, next) => {
     }
     const user = await User.findOne({ email }).select('+password');
 
-    if(!user.isVerified){
-        return res.status(200).send({
-            message: 'Please Register in DEVLog and verify your E-Mail.'
-        })
-    }
-
     if (!user || !await user.correctPassword(password, user.password)) {
         return next(new AppError('Incorrect Email or Password 😔😔😔😔 !!', 401));
+    }
+
+    if(!user.isVerified){
+        return res.status(200).send({
+            message: 'Please Register in DEVLog and verify your E-Mail'
+        })
     }
 
     const msg = "Login successfull !! 🙂🙂"
