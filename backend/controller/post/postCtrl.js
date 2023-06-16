@@ -100,6 +100,28 @@ const createPostCtrl = catchAsync(async (req, res, next) => {
 
   const minute_read = Math.ceil(countWords(content) / 2 / 60);
 
+
+  const TITLE = title;
+
+  let ltext = TITLE;
+  let text = ltext.toLowerCase();
+  let Len = text.length;
+  
+  let str = "";
+
+  for (let i = 0; i < Len; i++) {
+    if (
+      (text[i] >= "A" && text[i] <= "Z") ||
+      (text[i] >= "a" && text[i] <= "z")
+    ) {
+      str = str + text[i];
+    } else {
+      str = str + "-";
+    }
+  }
+  url_title = str;
+
+
   const postCreated = await Post.create({
     title,
     subtitle,
@@ -110,6 +132,7 @@ const createPostCtrl = catchAsync(async (req, res, next) => {
     content,
     minute_read,
     creationTime,
+    url_title,
     photo: req && req.file && req.file.path,
   });
 

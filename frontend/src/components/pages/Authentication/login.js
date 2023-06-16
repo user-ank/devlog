@@ -64,11 +64,8 @@ export default function Login() {
                 const resObj = await api.login({ email: formData.email, password: formData.password });
 
                 if (resObj.status == 200) {
-                   
-                    auth.login({
-                        email: formData.email,
-                        accessToken: resObj.data.accessToken, 
-                        profilePhoto: resObj.data.data.profilePhoto})
+                //    console.log(resObj.data.data);
+                    auth.login(resObj.data.data);
 
                     navigate(redirectPath, { replace: true });
 

@@ -141,7 +141,7 @@ export default function Signup() {
                 }
                 else if (resObj.status === 201) {
                     console.log(resObj);
-                    auth.login({email: formData.email, accessToken:resObj.data.accessToken});
+                    auth.login(resObj?.data?.data);
                     navigate(redirectPath);
                 }
                 else {

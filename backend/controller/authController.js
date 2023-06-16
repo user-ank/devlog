@@ -41,13 +41,13 @@ const createSendToken = async (user, msg,statusCode, res) => {
     res.cookie('jwt', refreshToken, cookieOptions);
     res.status(statusCode).json({
         status: 'success',
-        accessToken,
-        refreshToken,
         message: msg,
         data: {
+            accessToken,
+            refreshToken,
             profilePhoto: user.profilePhoto,
             username: user.userName,
-            name: user.name,
+            fullName: user.name,
             draft: user.isAnyDraft
         }
     });
@@ -85,10 +85,12 @@ exports.renewAccessToken = catchAsync(async (req, res, next) => {
     const accessToken = signToken(decoded.id, process.env.JWT_ACCESS_SECRET, process.env.JWT_ACCESS_EXPIRES_IN);
 
     const x = await User.findById(decoded.id);
-    // console.log(decoded.id);
     return res.status(201).json({
         accessToken: accessToken,
-        profilePhoto: x.profilePhoto
+        profilePhoto: x.profilePhoto,
+        fullName : x.name,
+        userName : x.userName,
+        email : x.email
     });
 });
 

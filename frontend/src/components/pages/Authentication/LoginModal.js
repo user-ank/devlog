@@ -62,10 +62,7 @@ export default function LoginModal(prop) {
 
                 if (resObj.status == 200) {
                    
-                    auth.login({
-                        email: formData.email,
-                        accessToken: resObj.data.accessToken, 
-                        profilePhoto: resObj.data.data.profilePhoto})
+                    auth.login(resObj?.data?.data);
 
                     prop.changeModal(false)
                     navigate("/");

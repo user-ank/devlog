@@ -1,0 +1,76 @@
+  .customOverlay{
+    background: none;
+  }
+  .qheader-modal {
+    font-family: "Poppins";
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: 1px solid rgb(218, 218, 218);
+    border-radius: 10px;
+    position: fixed;
+    top: 55px;
+    right: 30px;
+    padding: 10px;
+    /* transform: translate(-50%, -50%); */
+    z-index: 1000;
+  }
+
+  #loginImg {
+    cursor: pointer;
+  }
+
+  .horizontal-line {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    background-color: #201f1f;
+    height: 2px;
+  }
+
+
+  .options {
+    height: 30px;
+    display: flex;
+    /* align-items: center; */
+    padding: 0px 8px;
+    border: none;
+    width: 100%;
+  }
+
+  .options:hover {
+    background-color: rgb(235, 235, 235);
+    border: none;
+  }
+
+  .material-icons {
+    color: #413f3f;
+    padding-right: 5px;
+  }
+
+  .avatar {
+    margin-right: 10px;
+  }
+
+
+
+  .modal__info {
+    display: flex;
+    align-items: center;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .qHeader__icons {
+      display: none;
+    }
+
+    .qHeader__input {
+      display: none;
+    }
+  }
+
+  .logo_E {
+    color: red;
+  }
