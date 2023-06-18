@@ -20,7 +20,7 @@ function BlogHome(prop) {
 	const { user } = useAuth();							// to see if there is user present or not
 
 	function timeAgo() {
-		let blogTime = new Date(blog.updatedAt);
+		let blogTime = new Date(blog.creationTime);
 		let curentTime = new Date();
 		let timeDiff = curentTime.getTime() - blogTime.getTime();
 		let time = new Date(timeDiff);

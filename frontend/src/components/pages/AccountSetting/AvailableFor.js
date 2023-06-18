@@ -4,7 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AccountContext from '../../../context/accountContext';
 
 function AvailableFor() {
-    const isUsers = React.useContext(AccountContext);
+    const {isUsers, info} = React.useContext(AccountContext);
     return (
         <div className='user-availablefor'>
             <div className="availablefor">

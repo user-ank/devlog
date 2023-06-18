@@ -46,7 +46,7 @@ const createSendToken = async (user, msg,statusCode, res) => {
             accessToken,
             refreshToken,
             profilePhoto: user.profilePhoto,
-            username: user.userName,
+            userName: user.userName,
             fullName: user.name,
             draft: user.isAnyDraft
         }

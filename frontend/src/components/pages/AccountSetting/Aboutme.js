@@ -4,7 +4,8 @@ import AddIcon from '@mui/icons-material/Add';
 import AccountContext from '../../../context/accountContext';
 
 function Aboutme() {
-    const isUsers = React.useContext(AccountContext);
+    const {isUsers, info} = React.useContext(AccountContext);
+    
     return (
         <div className='user-aboutme'>
             <div className="aboutme">

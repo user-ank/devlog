@@ -9,7 +9,7 @@ import BasicInfo from './BasicInfo';
 import AccountContext from '../../../context/accountContext';
 
 function MainAccount() {
-    const isUsersProfile = React.useContext(AccountContext);
+    const {isUsers} = React.useContext(AccountContext);
 
     const stylingNavbar = () => {
         let list = document.getElementsByClassName("navImg");
@@ -34,11 +34,11 @@ function MainAccount() {
                 <MyTechStack/>
                 <AvailableFor/>
             </div>
+         
             {
-                isUsersProfile && <div className="user-basic-info-component">
+                isUsers && <div className="user-basic-info-component">
                     <BasicInfo />
                 </div>
-
             }
 
         </div>

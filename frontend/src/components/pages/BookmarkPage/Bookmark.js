@@ -32,6 +32,7 @@ function Bookmark() {
     };
 
     useEffect(()=>{
+        window.scrollTo({ top: 0, left: 0 });
         stylingNavbar();
         getBookmarks();
     },[]);
