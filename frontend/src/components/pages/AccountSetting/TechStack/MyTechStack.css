@@ -52,3 +52,10 @@
     color: rgb(96, 109, 131);
     text-align: center;
 }
+.techStackElements{
+    border-radius: 4px;
+    background-color:  rgba(128, 128, 128, 0.329);
+    margin: 5px 5px;
+    display: inline-block;
+    padding: 3px 10px;
+}

@@ -2,9 +2,9 @@ import React from 'react'
 import './MainAccount.css'
 import AccountProfile from "./AccountProfile";
 import Usersocials from "./Usersocials";
-import Aboutme from './Aboutme';
-import MyTechStack from './MyTechStack';
-import AvailableFor from './AvailableFor';
+import Aboutme from './Aboutme/Aboutme';
+import MyTechStack from './TechStack/MyTechStack';
+import AvailableFor from './AvailableFor/AvailableFor';
 import BasicInfo from './BasicInfo';
 import AccountContext from '../../../context/accountContext';
 
