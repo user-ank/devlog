@@ -71,6 +71,10 @@
     /* background-color: #145bf3; */
 }
 
+.profile_home-header-followbtn:hover {
+    cursor: pointer;
+}
+
 .profile_home-header-followicon {
     display: flex;
     align-items: center;

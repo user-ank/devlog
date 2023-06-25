@@ -15,8 +15,9 @@ function useRefreshToken() {
             const response = await API.get("users/renewAccessToken", {
                 withCredentials: true
             });
-            
-            login({...user, accessToken: response.data.accessToken, profilePhoto: response.data.profilePhoto});
+            console.log(response);
+            // {...user, accessToken: response.data.accessToken, profilePhoto: response.data.profilePhoto}
+            login(response.data);
             return response.data.accessToken; 
         }
         catch(err)

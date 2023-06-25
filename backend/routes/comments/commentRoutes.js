@@ -1,21 +1,27 @@
 const express = require("express");
+const { protect } = require('./../../controller/authController')
+
 const {
-  postCommentCtrl,
   deleteCommentCtrl,
   updateCommentCtrl,
   getCommentCtrl,
+  PostCommentCtrl
 } = require("../../controller/comment/commentCtrl");
+
 const commentRouter = express.Router();
-const isLogin=require("../../middlewares/isLogin")
+
+commentRouter.use(protect);
+
 //POST/api/v1/comments/
-commentRouter.post("/:id",isLogin, postCommentCtrl);
+commentRouter.post("/:id", PostCommentCtrl);
 
 //GET/api/v1/comments/:id
 commentRouter.get("/:id", getCommentCtrl);
 
 //Delete/api/v1/comments/:id
-commentRouter.delete("/:id",isLogin, deleteCommentCtrl);
+commentRouter.delete("/:id", deleteCommentCtrl);
+
 //put/api/v1/comments/:id
-commentRouter.put("/:id",isLogin, updateCommentCtrl);
+commentRouter.put("/:id", updateCommentCtrl);
 
 module.exports = commentRouter;

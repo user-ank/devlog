@@ -1,16 +1,62 @@
+// const nodemailer = require("nodemailer");
+
+// const sendEmail = async options => {
+
+//     let testAccount = await nodemailer.createTestAccount();
+
+//     // 1.) Create a transporter
+//     let transporter = nodemailer.createTransport({
+//         host: "smtp.ethereal.email",
+//         port: 587,
+//         auth: {
+//             user: 'jeanne.stamm90@ethereal.email',
+//             pass: 'kQn4d8BRhceS5vN55T',
+//         }
+//     });
+
+//     // 2.) Define the email options
+//     const mailOptions = {
+//         from: 'Aniruddha Das <foo@example.com>',
+//         to: options.email,
+//         subject: options.subject,
+//         text: options.message,
+//     };
+
+//     // // 3.) Actually send the email
+//     await transporter.sendMail(mailOptions);
+// }
+
+
+// module.exports = sendEmail;
+
+
+
+
+
+
 const nodemailer = require("nodemailer");
 
-const sendEmail = async options => {
+exports.genarateOTP = (otp_length = 6) => {
+    // generate 6 digits OTP.
+    let OTP = '';
+    for (let i = 0; i < otp_length; i++) {
+        const randomVal = Math.round(Math.random() * 9);
+        OTP += randomVal;
+    }
 
-    let testAccount = await nodemailer.createTestAccount();
+    return OTP;
+};
+
+
+exports.sendEmail = async (options) => {
 
     // 1.) Create a transporter
     let transporter = nodemailer.createTransport({
-        host: "smtp.ethereal.email",
+        host: "sandbox.smtp.mailtrap.io",
         port: 587,
         auth: {
-            user: 'jeanne.stamm90@ethereal.email',
-            pass: 'kQn4d8BRhceS5vN55T',
+            user: '4327ac497ff9f2',
+            pass: '3c7c055bb15ca8',
         }
     });
 
@@ -19,12 +65,11 @@ const sendEmail = async options => {
         from: 'Aniruddha Das <foo@example.com>',
         to: options.email,
         subject: options.subject,
-        text: options.message,
+        html: options.message
     };
 
-    // // 3.) Actually send the email
+    // 3.) Actually send the email
     await transporter.sendMail(mailOptions);
 }
 
 
-module.exports = sendEmail;

@@ -7,6 +7,8 @@ const appErr = require("../../utils/appErr");
 const generateToken = require("../../utils/generateToken");
 const getTokenFromHeader = require("../../utils/getTokenFromHeader");
 const { findById } = require("../../model/post/post");
+const catchAsync = require("./../../utils/catchAsync");
+const AppError = require("./../../utils/AppError");
 
 
 const userProfileCtrl = async (req, res, next) => {
@@ -25,24 +27,40 @@ const userProfileCtrl = async (req, res, next) => {
   }
 };
 
-const userProfileByUserNameCtrl = async (req, res, next) => {
-  //as username is unique
-  // console.log(req.userAuth);
-  const UserName = req.params;
-  // console.log(name.id);
-  try {
-    const token = getTokenFromHeader(req);
-    // console.log(token);
-    const user = await User.find({ userName: UserName.id });
 
-    res.json({
-      status: "success",
-      data: user,
-    });
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
+const getUserProfileCtrl = catchAsync(async (req, res) => {
+  const username = req.params.username;
+  const user = await User.find({userName:username});
+
+  // console.log(user[0].name);
+
+  res.status(200).send({
+    status: "success",
+    data: {
+      name: user[0].name,
+      profilePhoto: user[0].profilePhoto,
+      twitter: user[0].Twitter_Profile,
+      gitHub: user[0].GitHub_Profile,
+      stackOverflow: user[0].StackOverflow_Profile,
+      instagram: user[0].Instagram_Profile,
+      facebook: user[0].Facebook_Profile,
+      website: user[0].Website_URL,
+      linkedIn: user[0].LinkedIn_URL,
+      youtube: user[0].YouTube_Channel,
+      profileTagline: user[0].Profile_Tagline,
+      profileBio: user[0].Profile_Bio,
+      techStack: user[0].Tech_Stack,
+      location: user[0].Location,
+      available_for: user[0].Available_for,
+      followers: user[0].followers.length,
+      following: user[0].following.length,
+      posts: user[0].posts.length,
+      userAward: user[0].userAward,
+      creationTime: user[0].creationTime,
+    }
+  });
+
+});
 
 const whoViewedMyProfileCtrl = async (req, res, next) => {
   try {
@@ -75,69 +93,36 @@ const whoViewedMyProfileCtrl = async (req, res, next) => {
   }
 };
 
-const followingCtrl = async (req, res, next) => {
-  try {
-    const userToFollow = await User.findById(req.params.id);
-    const userWhoFollowed = await User.findById(req.userAuth);
+const FollowCtrl = catchAsync(async (req, res) => {
+  const userToFollow = await User.findById(req.params.id);
+  const userWhoFollowed = await User.findById(req.user);
 
-    if (userWhoFollowed && userToFollow) {
-      const isUserAlreadyFollowed = userToFollow.followers.find(
-        (follower) => follower.toString() === userWhoFollowed._id.toString()
-      );
-      if (isUserAlreadyFollowed) {
-        return next(appErr("you already follow this user"));
-      } else {
-        userToFollow.followers.push(userWhoFollowed._id);
-        userWhoFollowed.following.push(userToFollow._id);
+  if (!userWhoFollowed.following.includes(req.params.id)) {
+    userWhoFollowed.following.push(req.params.id);
+    userToFollow.followers.push(req.user);
+    await userWhoFollowed.save();
+    await userToFollow.save();
 
-        await userWhoFollowed.save();
-        await userToFollow.save();
+    res.status(200).send({
+      message: "Follow Successfull.🙂🙂",
+    });
+  } else {
+    userWhoFollowed.following = userWhoFollowed.following.filter(
+      (item) => item.toString() !== userToFollow._id.toString()
+    );
+    userToFollow.followers = userToFollow.followers.filter(
+      (item) => item.toString() !== userWhoFollowed._id.toString()
+    );
+    await userWhoFollowed.save();
+    await userToFollow.save();
 
-        res.json({
-          status: "success",
-          data: "you have succesfully followed this user",
-        });
-      }
-    }
-  } catch (error) {
-    next(appErr(error.message));
+    res.status(200).send({
+      message: "Successfully Unfollow !!",
+    });
   }
-};
+});
 
-const unFollowCtrl = async (req, res, next) => {
-  try {
-    const userToBeUnFollowed = await User.findById(req.params.id);
-    const userWhoUnFollowed = await User.findById(req.userAuth);
 
-    if (userToBeUnFollowed && userWhoUnFollowed) {
-      const isUserAlreadyFollowed = userToBeUnFollowed.followers.find(
-        (follower) => follower.toString() === userWhoUnFollowed._id.toString()
-      );
-
-      if (!isUserAlreadyFollowed) {
-        return next(appErr("you have not followed this user"));
-      } else {
-        userToBeUnFollowed.followers = userToBeUnFollowed.followers.filter(
-          (follower) => follower.toString() !== userWhoUnFollowed._id.toString()
-        );
-
-        await userToBeUnFollowed.save();
-
-        userWhoUnFollowed.following = userWhoUnFollowed.following.filter(
-          (following) =>
-            following.toString() !== userToBeUnFollowed._id.toString()
-        );
-        await userWhoUnFollowed.save();
-        res.json({
-          status: "success",
-          data: "you have successfully unfollow this user",
-        });
-      }
-    }
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
 
 //block
 const blockUsersCtrl = async (req, res, next) => {
@@ -270,93 +255,59 @@ const deleteUserAccountCtrl = async (req, res, next) => {
   }
 };
 
-const updateUserCtrl = async (req, res, next) => {
-  const { email, lastName, firstName } = req.body;
 
-  try {
-    // checking if email is not taken
 
-    if (email) {
-      const emailTaken = await User.findOne({ email });
+const updateProfileCtrl = catchAsync(async (req, res, next) => {
+  const {
+    name,
+    Twitter_Profile,
+    GitHub_Profile,
+    StackOverflow_Profile,
+    Instagram_Profile,
+    Facebook_Profile,
+    Website_URL,
+    LinkedIn_URL,
+    YouTube_Channel,
+    Profile_Tagline,
+    Profile_Bio,
+    Tech_Stack,
+    Location,
+    Available_for,
+  } = req.body;
 
-      if (emailTaken) {
-        return next(
-          appErr("email already taken ..so u cant update the email", 400)
-        );
-      }
-    }
+  const arr = Tech_Stack.split(',')
 
-    //update the user
+  const updatedProfile = await User.findByIdAndUpdate(
+    req.user,
+    {
+      name: name,
+      Twitter_Profile: Twitter_Profile,
+      GitHub_Profile: GitHub_Profile,
+      StackOverflow_Profile: StackOverflow_Profile,
+      Instagram_Profile: Instagram_Profile,
+      Facebook_Profile: Facebook_Profile,
+      Website_URL: Website_URL,
+      LinkedIn_URL: LinkedIn_URL,
+      YouTube_Channel: YouTube_Channel,
+      Profile_Tagline: Profile_Tagline,
+      Profile_Bio: Profile_Bio,
+      Tech_Stack: arr,
+      Location: Location,
+      Available_for: Available_for,
+    },
+    { new: true }
+  );
 
-    const user = await User.findByIdAndUpdate(
-      req.userAuth,
-      {
-        lastName,
-        firstName,
-        email,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+  res.status(201).send({
+    data: "Successfully your account is updated 🙂🙂🙂"
+  });
+});
 
-    res.json({
-      status: "success",
-      data: user,
-    });
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
-
-const updatePasswordCtrl = async (req, res, next) => {
-  const { password } = req.body;
-  try {
-    if (password) {
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-
-      //update user
-
-      const user = await User.findByIdAndUpdate(
-        req.userAuth,
-        {
-          password: hashedPassword,
-        },
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
-
-      res.json({
-        status: "success",
-        data: "password changed succcesfully",
-      });
-    } else {
-      return next(appErr("please provide password field"));
-    }
-  } catch (error) {
-    next(appErr(error.message));
-  }
-};
-
-const profilePhotoUploadCtrl = async (req, res, next) => {
-  // console.log(req.file)
-  try {
-    const userToUpdate = await User.findById(req.userAuth);
-
-    if (!userToUpdate) {
-      return next(appErr("user not found", 403));
-    }
-    if (userToUpdate.isBlocked) {
-      return next(appErr("action not allowed", 403));
-    }
+const profilePhotoUploadCtrl = catchAsync(async (req, res, next) => {
 
     if (req.file) {
       await User.findByIdAndUpdate(
-        req.userAuth,
+        req.user,
         {
           $set: {
             profilePhoto: req.file.path,
@@ -367,25 +318,74 @@ const profilePhotoUploadCtrl = async (req, res, next) => {
         }
       );
 
-      res.json({
+      res.status(200).send({
         status: "success",
         data: "you have successfully uploaded profile photo ",
       });
     }
-  } catch (error) {
-    next(appErr(error.message, 500));
-  }
-};
+    else{
+      res.status(404).send({
+        data: "Please provide profile photo.",
+      });
+    }
+});
 
+// isme sirf abhi summary bhejna hai ..ye kaam krna hai ankit tee ko
 const BookmarkedPostCtrl = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userAuth).populate("Bookmarked_Post");
+    const user = await User.findById(req.user).populate("Bookmarked_Post");
+
 
     const B_POST = user.Bookmarked_Post;
 
+
+
+
+    let doc = [];
+
+    await Promise.all(user.Bookmarked_Post.map(async (obj) => {
+
+      const usr = await User.findById(obj.user);
+      
+
+      let likeed = false;
+      for (let index = 0; index < obj.likes.length; index++) {
+        if (obj.likes[index] == user.id) {
+          likeed = true;
+          break;
+        }
+
+      }
+
+
+
+      if (usr) {
+        doc.push({
+          title: obj.title,
+          id: obj._id,
+          likeCnt: obj.likes.length,
+          content: obj.summary,
+          minRead: obj.minute_read,
+          photo: obj.photo,
+          isBookmarked: true,
+          isLiked: likeed,
+          user: {
+            userName: usr.userName,
+            name: usr.name,
+            userId: usr._id,
+            profilePhoto: usr.profilePhoto,
+          },
+          updatedAt: obj.updatedAt,
+          ContainImage: obj.ContainImage,
+        });
+      }
+    }));
+
+
+
     res.json({
       status: "success",
-      data: B_POST,
+      data: doc,
     });
   } catch (error) {
     next(appErr(error.message));
@@ -393,19 +393,17 @@ const BookmarkedPostCtrl = async (req, res, next) => {
 };
 
 module.exports = {
+  updateProfileCtrl,
   userProfileCtrl,
   usersCtrl,
   deleteUserAccountCtrl,
-  updateUserCtrl,
-  profilePhotoUploadCtrl,
   whoViewedMyProfileCtrl,
-  followingCtrl,
-  unFollowCtrl,
+  FollowCtrl,
   blockUsersCtrl,
   unblockUserCtrl,
   adminBlockUsersCtrl,
   adminUnBlockUsersCtrl,
-  updatePasswordCtrl,
-  userProfileByUserNameCtrl,
+  getUserProfileCtrl,
   BookmarkedPostCtrl,
+  profilePhotoUploadCtrl
 };

@@ -1,5 +1,5 @@
 import Navbar from './Navbar';
-import { useState,useEffect, useRef, useCallback } from 'react';
+import { useState } from 'react';
 import Searchbar from './Searchbar';
 import { logout } from '../../api';
 import { useAuth } from '../../context/auth'
@@ -14,9 +14,9 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 // Will contain header components like search-bar nav-bar login-icon 
 
-export const showSuccessMsg = () => {
 
-    // This element is in Header.js component, tell if login successful or not;
+// This element is in Header.js component, tell if login successful or not;
+export const showSuccessMsg = () => {
     let element = document.getElementById("logInSuccess");
     element.style.opacity = 1;
     element.style.visibility = "visible";
@@ -26,6 +26,7 @@ export const showSuccessMsg = () => {
     }, 3000);
 }
 
+// This element is in Header.js component, tell if something went wrong or not;
 export const wentWrongMsg = () => {
     let element = document.getElementById("wentWrong");
     element.style.opacity = 1;
@@ -34,6 +35,23 @@ export const wentWrongMsg = () => {
         element.style.visibility = "hidden";
         element.style.opacity = 0;
     }, 3000);
+}
+
+export const startLoader = () => {
+    let loader = document.getElementById('loader');
+    loader.style.visibility = "visible";
+    loader.classList.add("eighty");
+}
+
+export const finishLoader = () => {
+    let loader = document.getElementById('loader');
+    loader.classList.add("hundred");
+
+    setTimeout(() => {
+        loader.style.visibility = "hidden";
+        loader.classList.remove("eighty", "hundred");
+    }, 1000)
+
 }
 
 function Header() {
@@ -69,24 +87,13 @@ function Header() {
     }
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    // const Close = <CancelIcon />
     const openModal = () => {
         setIsModalOpen(true);
     };
     const closeModal = () => {
         setIsModalOpen(false);
     };
-    const handleOutsideClick = useCallback(
-        e => {
-            // if (!isNil(modal)) {
-            //     if (!modal.current.contains(e.target)) {
-            //         closeModal();
-            //         document.removeEventListener("click", handleOutsideClick, false);
-            //     }
-            // }
-        },
-        [closeModal]
-    );
+
     return (
         <div>
             <header>
@@ -101,7 +108,7 @@ function Header() {
                     <div id="loginImgDiv">
                         {/* <Link to="/devlog/profile"> */}
                         <img id="loginImg" onClick={openModal} src={(auth?.user?.profilePhoto)} />
-                        {/* </Link> */}
+
                         {isModalOpen && (
                             <Modal
                                 open={isModalOpen}
@@ -110,47 +117,38 @@ function Header() {
                                 closeOnEsc
                                 showCloseIcon={false}
                                 focusTrapped={false}
-                                // center
                                 closeOnOverlayClick={true}
-                                // styles={{
-                                //     overlay: {
-                                //         height: "auto",
-                                //         // backgroundColor : "none"
-                                //     },
-                                    
-                                // }}
                                 classNames={{
                                     overlay: 'customOverlay',
                                     modal: 'qheader-modal',
-                                  }}
+                                }}
                             >
-                                {/* setIsModalOpen(prev => !prev) */}
-                                
+
                                 <div >
                                     <div className="modal__info">
                                         <Avatar src={(auth?.user?.profilePhoto)} className='avatar' />
                                         <div className="user_info">
-                                            <h3 className='user-profle-name'>Anuj Patel</h3>
-                                            <p className='user-id'>@anujpatel03</p>
+                                            <h3 className='user-profle-name'>{auth?.user?.fullName}</h3>
+                                            <p className='user-id'>@{auth?.user?.userName}</p>
                                         </div>
                                     </div>
                                     <div className="horizontal-line"></div>
                                     <div className="modal__Field__option">
-                                        <Link to="/devlog/username/bookmarks">
-                                            <div className='bookmarks options'>
+                                        <Link to="/devlog/bookmarks">
+                                            <div className='bookmarks options' onClick={closeModal}>
                                                 <div className="material-icons"><BookmarkIcon /></div>
-                                                 My Bookmarks
+                                                My Bookmarks
                                             </div>
                                         </Link>
-                                        <Link to="/devlog/username/accountsetting">
-                                            <div className='account_setting options'>
+                                        <Link to="/devlog/account">
+                                            <div className='account_setting options' onClick={closeModal}>
                                                 <div className="material-icons"><ManageAccountsIcon /></div>
                                                 Account Settings
                                             </div>
                                         </Link>
                                     </div>
                                 </div>
-                                
+
                             </Modal>
                         )}
 

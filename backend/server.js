@@ -2,6 +2,7 @@ const path =require('path');
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const morgan = require("morgan");
 dotenv.config({ path: "./config/config.env" });
 const dbConnect = require("./config/db");
 const corsOptions = require('./utils/corsOptions');
@@ -9,6 +10,9 @@ const cookieParser = require('cookie-parser');
 const credentials = require('./middlewares/credentials');
 const app = express();
 const globalErrHandler = require("./middlewares/globalErrHandler");
+const bodyParser = require('body-parser')
+
+
 const port = process.env.PORT || 8000;
 
 app.use(credentials);
@@ -17,7 +21,10 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 //middleware
 
+
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); //pass incoming payload
+app.use(morgan('dev'));
 
 const userRouter = require("./routes/users/userRoutes");
 const postRouter = require("./routes/posts/postRoutes");

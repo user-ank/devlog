@@ -11,8 +11,9 @@ a{
 }
 .blogHeader{
     display: flex;
+    align-items: center;
 }
-.blogHeader > a{
+.blogHeaderNameTimeDiv{
     margin-left: 20px;
 }
 .blogHeaderImage{
@@ -20,7 +21,7 @@ a{
     height: 55px;
     width: 55px;
     background-color: rgb(218, 218, 218);
-    padding: 2px; 
+    /* padding: 2px;  */
     /* To be replaced by AvatarComponent later*/
 }
 .blogHeaderName{
