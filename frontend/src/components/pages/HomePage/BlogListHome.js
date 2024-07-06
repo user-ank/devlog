@@ -5,19 +5,22 @@ import './BlogListHome.css'
 
 function BlogListHome(props) {
 
-  let { blogs } = props;   
+  let { blogs, header } = props;   
   
   return (
     <div className='homePageCenter'>
-      {
-        blogs.map((blog) => (
+      <div className='homePageCenterHeader'>{header}</div>
+      <>
+        {
+          blogs.map((blog) => (
 
-         
-            <BlogHome key={blog.id} blog={blog} />
-       
+          
+              <BlogHome key={blog.id} blog={blog} />
+        
 
-        ))
-      }
+          ))
+        }
+      </>
     </div>
   )
 }

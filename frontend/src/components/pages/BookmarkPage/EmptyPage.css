@@ -1,0 +1,24 @@
+#emptyPage{
+    border-radius: 8px;
+    width: 58%;
+    background-color: white;
+    border: 0.1px solid  rgb(218, 218, 218);
+}
+
+.bookmarksHeader{
+    padding: 18px;
+    font-family: "Poppins";
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.bookmarksMSG{
+    margin-top: 50px;
+    color:  #605b67;
+}
+
+#emptyPage > * {
+    
+    font-family: "Poppins";
+    text-align: center;
+}
