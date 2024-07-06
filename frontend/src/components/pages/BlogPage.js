@@ -2,12 +2,13 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 
 function BlogPage() {
-    const params = useParams();
-    const username = params.username
-    const blogTitle = params.blogTitle
+  const params = useParams();
+  const username = params.username
+  const blogTitle = params.blogTitle
 
   return (
-    <div>
+    <div className='blogPage'>
+
       {console.log(username, blogTitle)}
     </div>
   )

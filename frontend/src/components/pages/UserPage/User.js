@@ -22,6 +22,7 @@ function User() {
   const [userArray, setUserArray] = useState([]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0 });
     stylingNavbar()
 
     let loader = document.getElementById('loader');
@@ -42,7 +43,7 @@ function User() {
         setTimeout(() => {
           loader.style.visibility = "hidden";
           loader.classList.remove("eighty", "hundred");
-        }, 1000)
+        }, 700)
 
       })
   }, [username])

@@ -1,0 +1,61 @@
+.user-mytechstack {
+    font-family: 'Poppins';
+    padding-top: 1.75rem;
+    padding-bottom: 1.75rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border: 1px solid rgb(218, 218, 218);
+    border-radius: 8px;
+    width: 50%;
+    margin-right: 0.625rem;
+
+}
+
+.mytechstack {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-mytechstack-text {
+    font-family: 'Poppins';
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.mytechstack-account-mytechstackbtn {
+    border-radius: 90px;
+    border: 1px solid rgb(150, 150, 150);
+    height: 44px;
+    margin: auto;
+    padding: 6px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(54, 65, 83);
+    background-color: white;
+    margin-bottom: 0.5rem;
+}
+
+.mytechstack-account-mytechstackbtn:hover {
+    cursor: pointer;
+    background-color: rgb(227, 232, 239);
+}
+
+.mytechstack-account-mytechstackicon {
+    display: flex;
+    align-items: center;
+}
+
+.message-of-empty-bio {
+    font-family: 'Poppins';
+    color: rgb(96, 109, 131);
+    text-align: center;
+}
+.techStackElements{
+    border-radius: 4px;
+    background-color:  rgba(128, 128, 128, 0.329);
+    margin: 5px 5px;
+    display: inline-block;
+    padding: 3px 10px;
+}

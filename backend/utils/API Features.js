@@ -28,7 +28,7 @@ class APIFeatures {
             const sortFix = this.queryString.sort.split(",").join(" ");
             this.query = this.query.sort(sortFix);
         } else {
-            this.query = this.query.sort("-createdAt");
+            this.query = this.query.sort("-creationTime");
         }
 
         return this;

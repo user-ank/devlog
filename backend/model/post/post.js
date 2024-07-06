@@ -7,11 +7,12 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: [true, "Post Title is required"],
     trim: true,
+    index: true,
   },
   subtitle: {
     type: String,
     required: [true, "Subtitle Title is required"],
-  },
+    index: true  },
   summary: {
     type: String,
   },
@@ -23,9 +24,13 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: [true, "Content is required"],
   },
+  creationTime: {
+    type: Date,
+  },
+  updateTime:{
+    type: Date
+  },
   report_number: { type: String },
-
-
   is_Bookmared: [
     {
       type: Boolean,
@@ -33,7 +38,6 @@ const postSchema = new mongoose.Schema({
       // ref: "User",
     },
   ],
-
   category: {
     type: String,
     required: [true, "Catagory is required"],
@@ -70,9 +74,14 @@ const postSchema = new mongoose.Schema({
 },
 
   {
-    timestamps: true,
     toJSON: { virtuals: true }
   })
+
+  postSchema.index({ title: "text", subtitle: "text" });
+
+
+
+
 
 //hook
 postSchema.pre(/^find/, function (next) {

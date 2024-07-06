@@ -38,7 +38,7 @@ function Home() {
                 setTimeout(()=>{
                     loader.style.visibility = "hidden";
                     loader.classList.remove("eighty", "hundred");
-                },1000)
+                },700)
             })
         }catch(err){
             console.log(err);
@@ -58,7 +58,7 @@ function Home() {
             setTimeout(()=>{
                 loader.style.visibility = "hidden";
                 loader.classList.remove("eighty", "hundred");
-            },1000)
+            },700)
         }
         catch(err){
             console.log(err);
@@ -66,7 +66,9 @@ function Home() {
        
     }
     useEffect(() => {
-
+        //If you're navigating from one (scrollable) component to another the scrollbar isn't aware of it, since you're just changing views without reloading the whole page, and will keep it's y (and x) position. To avoid this behavior you need to manually set the scroll position on re-render, like so:
+        window.scrollTo({ top: 0, left: 0 });
+       
         //since there was no click in the beginning thus there was no redborder on homelink
         //thus this stylingNavbar is there
         stylingNavbar()

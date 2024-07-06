@@ -1,5 +1,5 @@
 import Navbar from './Navbar';
-import { useState,useEffect, useRef, useCallback } from 'react';
+import { useState } from 'react';
 import Searchbar from './Searchbar';
 import { logout } from '../../api';
 import { useAuth } from '../../context/auth'
@@ -48,8 +48,8 @@ export const finishLoader = () => {
     loader.classList.add("hundred");
 
     setTimeout(() => {
-      loader.style.visibility = "hidden";
-      loader.classList.remove("eighty", "hundred");
+        loader.style.visibility = "hidden";
+        loader.classList.remove("eighty", "hundred");
     }, 1000)
 
 }
@@ -108,7 +108,7 @@ function Header() {
                     <div id="loginImgDiv">
                         {/* <Link to="/devlog/profile"> */}
                         <img id="loginImg" onClick={openModal} src={(auth?.user?.profilePhoto)} />
-                       
+
                         {isModalOpen && (
                             <Modal
                                 open={isModalOpen}
@@ -121,15 +121,15 @@ function Header() {
                                 classNames={{
                                     overlay: 'customOverlay',
                                     modal: 'qheader-modal',
-                                  }}
+                                }}
                             >
-                                
+
                                 <div >
                                     <div className="modal__info">
                                         <Avatar src={(auth?.user?.profilePhoto)} className='avatar' />
                                         <div className="user_info">
-                                            <h3 className='user-profle-name'>Anuj Patel</h3>
-                                            <p className='user-id'>@anujpatel03</p>
+                                            <h3 className='user-profle-name'>{auth?.user?.fullName}</h3>
+                                            <p className='user-id'>@{auth?.user?.userName}</p>
                                         </div>
                                     </div>
                                     <div className="horizontal-line"></div>
@@ -137,18 +137,18 @@ function Header() {
                                         <Link to="/devlog/bookmarks">
                                             <div className='bookmarks options' onClick={closeModal}>
                                                 <div className="material-icons"><BookmarkIcon /></div>
-                                                 My Bookmarks
+                                                My Bookmarks
                                             </div>
                                         </Link>
-                                        <Link to="/devlog/username/accountsetting" onClick={closeModal}>
-                                            <div className='account_setting options'>
+                                        <Link to="/devlog/account">
+                                            <div className='account_setting options' onClick={closeModal}>
                                                 <div className="material-icons"><ManageAccountsIcon /></div>
                                                 Account Settings
                                             </div>
                                         </Link>
                                     </div>
                                 </div>
-                                
+
                             </Modal>
                         )}
 
