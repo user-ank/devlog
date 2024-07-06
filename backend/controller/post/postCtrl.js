@@ -406,21 +406,19 @@ const userPostsCtrl = async (req, res, next) => {
 };
 
 // for viewing single post
-const postDetailsCtrl = async (req, res) => {
+const postDetailsCtrl = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id);
-
-    const isViewed = post.numViews.includes(req.userAuth);
-
-    if (isViewed) {
-      res.json({
-        status: "success",
-        data: post,
-      });
-    } else {
-      post.numViews.push(req.userAuth);
-      await post.save();
+    if (!post) {
+      return next(appErr("Post not found"));
     }
+    // Increment the numViews
+    post.numViews += 1;
+    await post.save();
+    res.json({
+      status: "success",
+      data: post,
+    });
   } catch (error) {
     next(appErr(error.message));
   }
