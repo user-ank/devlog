@@ -289,23 +289,28 @@ const SearchPosts = catchAsync(async (req, res, next) => {
   // res.send(results);
 
   let results;
-  console.log(req.query.text);
+  // console.log(req.query.text);
 
   if (req.query.text) {
     // if (req.query.text.includes(",") || req.query.text.includes(" ")) {
     results = await Post.aggregate([
       {
-        $search: {
-          index: "autocomplete",
-          autocomplete: {
-            query: req.query.text,
-            path: "title",
-            fuzzy: {
-              maxEdits: 1,
-            },
-            tokenOrder: "sequential",
-          },
+        $match: {
+          $text: {
+            $search: req.query.text
+          }
+        }
+      },
+      {
+        $lookup: {
+          from: 'users', // the name of the User collection
+          localField: 'user',
+          foreignField: '_id',
+          as: 'userDetails',
         },
+      },
+      {
+        $unwind: '$userDetails',
       },
       {
         $project: {
@@ -315,6 +320,12 @@ const SearchPosts = catchAsync(async (req, res, next) => {
           subtitle: 1,
           summary: 1,
           minute_read: 1,
+          user: {
+            _id: '$userDetails._id',
+            username: '$userDetails.userName',
+          },
+          
+          url_title:1,
           content: 1,
           score: { $meta: "searchScore" },
         },

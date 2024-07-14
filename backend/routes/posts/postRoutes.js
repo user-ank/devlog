@@ -26,7 +26,7 @@ const {protect} = require('./../../controller/authController');
 
 postRouter.get("/",fetchPostCtrl);
 postRouter.get("/user/:id",userPostsCtrl);   // soln => change get to post method
-postRouter.post("/search",SearchPosts);
+postRouter.get("/search",SearchPosts);
 
 
 postRouter.use(protect);
