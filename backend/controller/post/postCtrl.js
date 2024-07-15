@@ -169,6 +169,7 @@ const fetchPostCtrl = async (req, res, next) => {
     doc1.map((obj) => {
       doc.push({
         title: obj.title,
+        url_title: obj.url_title,
         id: obj._id,
         likeCnt: obj.likes.length,
         content: obj.summary,
@@ -245,6 +246,7 @@ const AuthecticatefetchPostCtrl = async (req, res, next) => {
     doc1.map((obj) => {
       doc.push({
         title: obj.title,
+        url_title: obj.url_title, 
         id: obj._id,
         isLiked: obj.isLike,
         isBookmarked: obj.isBookmarked,
@@ -418,18 +420,29 @@ const userPostsCtrl = async (req, res, next) => {
 
 // for viewing single post
 const postDetailsCtrl = async (req, res, next) => {
+  const url_title = req.params.url_title;
+  const userName = req.params.userName;
   try {
-    const post = await Post.findById(req.params.id);
-    if (!post) {
-      return next(appErr("Post not found"));
+    const user = await User.find({ userName: userName })
+      .populate("posts");
+    if (user.length > 0) {
+      user[0].posts.map( async (post) => {
+        if(post.url_title === url_title)
+          {
+            post.numViews += 1;   // Increment the numViews
+            await post.save();
+            res.status(200).json({
+              status: "success",
+              data: post      
+            });
+          }
+        })
     }
-    // Increment the numViews
-    post.numViews += 1;
-    await post.save();
-    res.json({
-      status: "success",
-      data: post,
-    });
+    else{
+      res.status(404).json({
+        message: "User not found",
+      });
+    }
   } catch (error) {
     next(appErr(error.message));
   }

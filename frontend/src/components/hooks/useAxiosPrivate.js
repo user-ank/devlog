@@ -2,12 +2,15 @@ import { PrivateAPI } from "../../api";
 import { useEffect } from "react";
 import useRefreshToken from "./useRefreshToken";
 import { useAuth } from "../../context/auth";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 function useAxiosPrivate() {
 
     const refresh = useRefreshToken();
     const { user } = useAuth();
+    const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -31,6 +34,9 @@ function useAxiosPrivate() {
                     prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return PrivateAPI(prevRequest);
                 }
+                if(err?.response.status === 401) // If token is expired then should logout from app and redirect to login page
+                    navigate('/devlog/login', { state: { path : location.pathname } }); // right only redirecting but should logout(local) as well.
+
                 return Promise.reject(err);
             }
         );

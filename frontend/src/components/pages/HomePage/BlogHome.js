@@ -120,7 +120,7 @@ function BlogHome(prop) {
 				</div>
 
 
-				<Link to={"/devlog/" + blog?.user?.userName + "/" + blog?.title}>
+				<Link to={"/devlog/" + blog?.user?.userName + "/" + blog?.url_title}>
 					<div className='blogBody'>
 						<div className='blogBodyContentDiv'>
 							<div className='blogBodyTitle'>{blog?.title}</div>
