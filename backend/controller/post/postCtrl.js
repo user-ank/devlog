@@ -403,6 +403,11 @@ const userPostsCtrl = async (req, res, next) => {
       const UsersPost = await Post.find({ user: user_id })
         .sort({ createdAt: -1 })
         .populate("user");
+      
+        UsersPost.map((obj) => {
+        obj.content = obj.summary; // Since we are reusing components in frontend, we need summary in content. 
+      })
+      
       res.status(200).json({
         status: "success",
 

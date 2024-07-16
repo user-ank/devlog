@@ -51,8 +51,8 @@ postRouter.get('/draft',getDraft);
 
 // postRouter.put("/:id", upload.single("image"), updatePostCtrl);
 
+postRouter.get("/bookmark/:id",BookmarkPostCtrl);
 postRouter.get("/:userName/:url_title", postDetailsCtrl);
 
-postRouter.get("/bookmark/:id",BookmarkPostCtrl);
 
 module.exports = postRouter;
