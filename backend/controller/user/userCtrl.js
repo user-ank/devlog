@@ -366,6 +366,7 @@ const BookmarkedPostCtrl = async (req, res, next) => {
           likeCnt: obj.likes.length,
           content: obj.summary,
           minRead: obj.minute_read,
+          url_title: obj.url_title,
           photo: obj.photo,
           isBookmarked: true,
           isLiked: likeed,
