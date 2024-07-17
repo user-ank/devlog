@@ -1,66 +1,58 @@
-import React from 'react'
-import { useEffect, useState } from "react";
-import "./User.css"
-import ProfileHome from './Profile_home'
-import ProfileListPost from './ProfileListPost'
+import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import LeftSide from "../HomePage/LeftSide";
+import '../HomePage/BlogListHome.css';
+import "../BookmarkPage/Bookmark.css";
+import BlogListHome from "../HomePage/BlogListHome";
+import { startLoader, finishLoader } from "../../Header/Header";
+import EmptyPage from "../BookmarkPage/EmptyPage";
+import ProfileHome from './Profile_home';
 import UserState from '../../../context/userState';
-
 
 function User() {
   const { username } = useParams();
-  // console.log("username ",username);
-  //since there was no click in the beginning thus there was no redborder on homelink
-  //thus this stylingNavbar is there
-  function stylingNavbar() {
+  const [userArray, setUserArray] = useState([]);
+  const PrivateApi = useAxiosPrivate();
+  const [isEmpty, setEmpty] = useState(false);
+
+  const getUserPosts = async () => {
+    startLoader();
+    const res = await PrivateApi.get(`/posts/user/${username}`);
+    setUserArray(res.data.data);
+    finishLoader();
+    if (res.data.data.length === 0) setEmpty(true);
+    console.log("User's res : ",res);
+  };
+
+  const stylingNavbar = () => {
     let list = document.getElementsByClassName("navImg");
     for (let element of list) {
       element.classList.remove("navActive");
     }
-  }
-
-  const [userArray, setUserArray] = useState([]);
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0 });
-    stylingNavbar()
-
-    let loader = document.getElementById('loader');
-    loader.style.visibility = "visible";
-    loader.classList.add("eighty");
-
-
-    fetch("http://localhost:8000/api/v1/posts/user/" + username)
-      .then(res => {
-        return (res.json())
-      })
-      .then((data) => {
-        console.log(data);
-        setUserArray(data.data);
-        // console.log("userArray ", data.data);
-        loader.classList.add("hundred");
-
-        setTimeout(() => {
-          loader.style.visibility = "hidden";
-          loader.classList.remove("eighty", "hundred");
-        }, 700)
-
-      })
-  }, [username])
-
+    stylingNavbar();
+    getUserPosts();
+  }, [username]);
 
   return (
-
     <div id='user'>
       <UserState>
         <ProfileHome />
-        <div id="user-post-component">
-
-          <ProfileListPost posts={userArray} />
+        <div id="bookmark">
+          <LeftSide />
+          {isEmpty ? (
+            <EmptyPage header="User" message="User haven't posted any post." />
+          ) : (
+            <BlogListHome header="User's Posts" blogs={userArray} showLimited={true} />
+          )}
         </div>
       </UserState>
     </div>
-  )
+  );
 }
 
-export default User
+export default User;

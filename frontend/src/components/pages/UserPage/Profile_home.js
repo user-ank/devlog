@@ -35,12 +35,12 @@ function Profile_home() {
                     </div>
                 </div>
 
-                <div className="profile_home-header-thirdline">
+                {/* <div className="profile_home-header-thirdline">
                     <div className="profile_home-header-homebtn btns"> Home </div>
                     <div className="profile_home-header-badgesbtn btns">Awards</div>
                     <div className="profile_home-header-newsletterbtn btns">Newsletter</div>
-                </div>
-                <hr className='horizontal-line' />
+                </div> */}
+                {/* <hr className='horizontal-line' /> */}
             </div>
         </div>
 

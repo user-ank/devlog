@@ -1,0 +1,264 @@
+.blog{
+    display: flex;
+}
+
+.blogPageCenter {
+    border-radius: 8px;
+    width: 58%;
+    background-color: white;
+    border: 0.1px solid rgb(218, 218, 218);
+    padding: 1.5rem;
+    font-family: "Inter", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-variation-settings:
+            "slnt" 0;
+}
+
+.blog-title {
+    font-size: 2.5em;
+    margin-bottom: 0.5em;
+}
+
+.blog-subtitle {
+    font-size: 1.5em;
+    color: #666;
+    margin-bottom: 1em;
+}
+
+.blog-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.blog-summary {
+    font-size: 1.2em;
+    margin-bottom: 1em;
+}
+
+.blog-content p {
+    font-size: 1em;
+    line-height: 1.6;
+    margin-bottom: 1em;
+}
+
+.blog-footer {
+    margin-top: 2em;
+    font-size: 0.9em;
+    color: #999;
+}
+
+.blog-meta span,
+.blog-likes-comments span {
+    margin-right: 10px;
+}
+
+.blog-details {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.blog-date {
+  text-align: right;
+  font-size: 0.85em;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.blog-title {
+  font-size: 2.5em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.blog-subtitle {
+  font-size: 1.5em;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.blog-author {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.author-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  font-size: 1em;
+  color: #333;
+}
+
+.author-role {
+  font-size: 0.85em;
+  color: #888;
+}
+
+.blog-content p {
+  font-size: 1em;
+  line-height: 1.6;
+  margin-bottom: 1em;
+}
+
+.blog-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+/* Below is testing */
+
+/* For small screens (mobile devices) */
+@media only screen and (max-width: 600px) {
+    .blog-details {
+        max-width: 90%;
+        margin: 0 auto;
+        padding: 10px;
+    }
+
+    .blog-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+
+    .blog-content p {
+        font-size: 0.9em;
+        line-height: 1.4;
+        margin-bottom: 0.5em;
+    }
+}
+
+/* For medium screens (tablets) */
+@media only screen and (min-width: 601px) and (max-width: 900px) {
+    .blog-details {
+        max-width: 80%;
+        margin: 0 auto;
+        padding: 15px;
+    }
+
+    .blog-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+
+    .blog-content p {
+        font-size: 1em;
+        line-height: 1.5;
+        margin-bottom: 0.7em;
+    }
+}
+
+/* For large screens (desktops) */
+@media only screen and (min-width: 901px) {
+    .blog-details {
+        max-width: 70%;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .blog-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .blog-content p {
+        font-size: 1.1em;
+        line-height: 1.7;
+        margin-bottom: 0.9em;
+    }
+}
+
+.blog-title {
+    font-size: 3em;
+    margin-bottom: 0.2em;
+}
+
+.blog-subtitle {
+    font-size: 1.8em;
+    color: #666;
+    margin-bottom: 0.5em;
+}
+
+.blog-content p {
+    font-size: 1.2em;
+    line-height: 1.8;
+    margin-bottom: 1.2em;
+}
+
+.blog-footer {
+    margin-top: 1.5em;
+    font-size: 0.95em;
+    color: #999;
+}
+.blog-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.blog-details {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.blog-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.blog-likes-comments {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.blog-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.blog-footer {
+    margin-top: 0.5em;
+    font-size: 0.95em;
+    color: #999;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.blog-meta {
+    display: flex;
+    justify-content: space-between;
+}
+
+.blog-likes-comments {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.2em;
+}

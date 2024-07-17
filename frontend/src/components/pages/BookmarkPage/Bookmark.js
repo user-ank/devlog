@@ -41,7 +41,7 @@ function Bookmark() {
     return (
         <div id="bookmark">
               <LeftSide/>
-              {isEmpty ? <EmptyPage/> : <BlogListHome header="Bookmarks page" blogs={blogArray}/>} 
+            {isEmpty ? <EmptyPage header="Bookmarks" message="You have no bookmarked posts."/> : <BlogListHome header="Bookmarks page" blogs={blogArray}/>} 
             
             {/* Reusing the BlogListHome component; EmptyPage will be shown in case of no bookmarks*/}
                    

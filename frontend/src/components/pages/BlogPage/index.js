@@ -13,7 +13,6 @@ function BlogPage() {
   const[pageData, setPageData] = useState(null);
   const getBlogPage = async () => {
     const result = await PrivateAPI.get(`/posts/${username}/${blogTitle}`);
-    // console.log(result);
     setPageData(result.data.data);
     setIsLoading(false);
     return;
